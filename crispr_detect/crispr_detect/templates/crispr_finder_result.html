@@ -1,0 +1,21 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="modal-header">
+    <h1 class="form-heading">Crispr Finder {% if uuid %} : {{ uuid }} {% endif %}</h1>
+</div>
+<div class="modal-body">
+<!--
+    {% if dirpath %}
+    <p>Your result will be located here:
+    <pre> {{ dirpath }} </pre>
+    </p>
+    {% endif %}
+    <p>Job status: {% if processing_flag %} Processing <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
+-->
+    <p>Processing your results{% if processing_flag %} <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
+</div>
+
+{% endblock %}

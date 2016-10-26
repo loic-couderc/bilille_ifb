@@ -1,0 +1,45 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% from 'boostrap_macros.html' import input_field %}
+{% block content %}
+
+<form action="{{url_for('crispr_finder')}}" class="form-horizontal" method="POST">
+    {{ form.hidden_tag() }}
+    <div class="modal-header">
+        <h1 class="form-heading">Crispr Finder</h1>
+    </div>
+    <div class="modal-body">
+        {{ input_field(form, "sequence", "E.g. > Fasta header(s) with DNA sequence(s).") }}
+        {# {{ input_field(form, "sequence", class="filestyle") }}  #}
+
+        {{ input_field(form, "k_mer_size_filter") }}
+        {{ input_field(form, "pattern") }}
+        {{ input_field(form, "window_size") }}
+        {{ input_field(form, "allowed_mismatch") }}
+        {{ input_field(form, "spacer_dr_match_limit") }}
+        {{ input_field(form, "min_dr") }}
+        {{ input_field(form, "max_dr") }}
+        {{ input_field(form, "min_spacer_dr_ratio") }}
+        {{ input_field(form, "max_spacer_dr_ratio") }}
+        {{ input_field(form, "first_pass_limit") }}
+        {{ input_field(form, "search_tracrrna") }}
+    </div>
+    <div class="form-group col-md-7">
+        <button class="btn btn-success pull-right" type="submit">Submit job</button>
+    </div>
+
+    <!-- <div class="form-group col-md-7">
+    <span class="text-muted pull-left"><em><span style="color:red;">*</span> Indicates required field</em></span>
+    </div>
+    -->
+</form>
+<script>
+
+</script>
+{% endblock %}
+
+{% block js %}
+
+{{ super() }}
+{# <script src="{{ url_for('static', filename='js/bootstrap-filestyle.min.js') }}"></script>  #}
+{% endblock %}

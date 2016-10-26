@@ -1,0 +1,11 @@
+flask
+#flask-mail
+flask-wtf
+flask-babel
+guess_language
+#flipflop
+#coverage
+#flask-bootstrap
+
+marshmallow
+webargs

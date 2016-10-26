@@ -1,0 +1,9 @@
+dd if=/dev/zero of=small_file bs=1024 count=1000
+sudo losetup -f small_file
+To know which loop device losetup created, you can use losetup -a
+sudo mkfs.ext4 /dev/loop0
+mkdir /tmp/small
+sudo mount /dev/loop0 /tmp/small
+sudo unmount /tmp/small
+sudo losetup -d /dev/loop0
+remove the file

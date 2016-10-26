@@ -1,0 +1,56 @@
+version: '2'
+services:
+
+  antismash-redis:
+    restart: always
+    image: redis
+
+  antismash-run:
+    volumes:
+      - "/data/antismash/upload:/upload:rw"
+      - "/data/databases:/databases:ro"
+    links:
+      - antismash-redis:redis
+    image: antismash/runsmash-lite
+    command: /runsmash/runSMASH --queue redis://redis/0 --workdir /upload --statusdir /upload/status --name runner01 --cpus 4
+
+  antismash-job-monitor:
+    restart: always
+    volumes:
+      - "/data/antismash/upload:/upload"
+      - "/data/antismash/websmash:/config"
+    links:
+      - antismash-redis:redis
+
+    image: antismash/runsmash-lite
+    command: /runsmash/watchStatus --queue redis://redis/0 --statusdir /upload/status
+
+  antismash-web-interface:
+    restart: always
+    volumes:
+      - "/data/antismash/upload:/upload"
+      - "/data/antismash/websmash:/config"
+    links:
+      - antismash-redis:redis
+    ports:
+      - 5000:8000
+    image: antismash/websmash
+
+  crispr-web-interface:
+    restart: always
+    volumes:
+      - /tmp/cripsr:/tmp
+    build:
+      context: ./crispr_detect
+    ports:
+      - 5001:8000
+
+#  web-front:
+#    restart: always
+#    image: nginx:latest
+#    ports:
+#      - 80:80
+#      - 443:443
+#    links:
+#      - antismash-web-interface:bilille.antismash
+#      - crispr-web-interface:bilille.crispr
