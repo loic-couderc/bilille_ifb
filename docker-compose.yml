@@ -12,6 +12,13 @@ services:
     links:
       - antismash-redis:redis
     image: antismash/runsmash-lite
+    environment:
+      - ANTISMASH_EMAIL_FROM=loic.couderc@univ-lille1.fr
+      - ANTISMASH_EMAIL_ERROR=loic.couderc@univ-lille1.fr
+      - ANTISMASH_EMAIL_HOST=smtps.univ-lille1.fr
+      - ANTISMASH_EMAIL_ENCRYPT=TLS
+      - ANTISMASH_EMAIL_USER=lcouderc
+      - ANTISMASH_EMAIL_PASSWORD=********
     command: /runsmash/runSMASH --queue redis://redis/0 --workdir /upload --statusdir /upload/status --name runner01 --cpus 4
 
   antismash-job-monitor:
@@ -34,7 +41,9 @@ services:
       - antismash-redis:redis
     ports:
       - 5000:8000
+      #- 587:587
     image: antismash/websmash
+
 
   crispr-web-interface:
     restart: always
