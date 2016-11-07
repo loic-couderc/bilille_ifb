@@ -6,9 +6,10 @@ services:
     image: redis
 
   antismash-run:
-    volumes:
-      - "/data/antismash/upload:/upload:rw"
-      - "/data/databases:/databases:ro"
+    restart: always
+    volumes:     
+      - "/root/mydisk/ifb/data/antismash/upload:/upload:rw"
+      - "/root/mydisk/ifb/antismash/data/databases:/databases:ro"
     links:
       - antismash-redis:redis
     image: antismash/runsmash-lite
@@ -24,42 +25,52 @@ services:
   antismash-job-monitor:
     restart: always
     volumes:
-      - "/data/antismash/upload:/upload"
-      - "/data/antismash/websmash:/config"
+      - "/root/mydisk/ifb/data/antismash/upload:/upload"
+      - "/root/mydisk/ifb/data/antismash/websmash:/config"
     links:
       - antismash-redis:redis
 
     image: antismash/runsmash-lite
     command: /runsmash/watchStatus --queue redis://redis/0 --statusdir /upload/status
 
-  antismash-web-interface:
+
+  nginx-proxy:  
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - .:/etc/nginx/
+    restart: always
+    links:
+      - site1
+      - site2
+
+
+  site1:
     restart: always
     volumes:
-      - "/data/antismash/upload:/upload"
-      - "/data/antismash/websmash:/config"
+      - "/root/mydisk/ifb/data/antismash/upload:/upload"
+      - "/root/mydisk/ifb/data/antismash/websmash:/config"
     links:
       - antismash-redis:redis
-    ports:
-      - 5000:8000
-      #- 587:587
     image: antismash/websmash
+    container_name: site1
 
 
-  crispr-web-interface:
+  site2:
     restart: always
     volumes:
       - /tmp/cripsr:/tmp
     build:
       context: ./crispr_detect
-    ports:
-      - 5001:8000
+    container_name: site2
 
-#  web-front:
+#  site2:
 #    restart: always
-#    image: nginx:latest
-#    ports:
-#      - 80:80
-#      - 443:443
-#    links:
-#      - antismash-web-interface:bilille.antismash
-#      - crispr-web-interface:bilille.crispr
+#    image: tutum/hello-world
+#    container_name: site2
+
+
+
+
+
