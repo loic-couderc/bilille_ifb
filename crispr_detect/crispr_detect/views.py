@@ -118,9 +118,14 @@ def crispr_finder():
 @app.route('/crispr_finder/result/<uuid>')
 def crispr_finder_result(uuid):
     flag = os.path.join(get_dirpath(uuid), 'processing')
+    #if not request.script_root:
+    #    # this assumes that the 'index' view function handles the path '/'
+    #    request.script_root = url_for('/crispr_finder/result/', _external=True)
     return render_template('crispr_finder_result.html', uuid=uuid, dirpath=get_dirpath(uuid),processing_flag=os.path.isfile(flag))
 
-
+@app.route('/antismash')
+def antismash():
+	return redirect("/antismash")
 
 # TODO : fonction runner qui reccupère les données du formulaire, puis créé le dossier de travail et lance le job dans un thread
 #@use_kwargs(CmdSchema())

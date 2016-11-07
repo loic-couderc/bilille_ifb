@@ -42,7 +42,7 @@
                 <a href="{{ url_for('crispr_finder') }}">Crispr Finder</a>
             </li>
             <li>
-                <a href="http://{{ config.ANTISMASH_DOMAIN_NAME }}:{{ config.ANTISMASH_PORT }}" target="_blank">Antismash</a>
+                <a href="{{ url_for('antismash', _external=True) }}" target="_blank">Antismash</a>
             </li>
             <li>
                 <a href="#">IS Finder</a>
