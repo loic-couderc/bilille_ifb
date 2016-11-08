@@ -1,13 +1,15 @@
 from flask_wtf import FlaskForm as Form
-from wtforms import FileField, TextAreaField, StringField, IntegerField, FloatField, SelectField
+from wtforms import TextAreaField, StringField, IntegerField, FloatField, SelectField
 from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 class CrisprFinderForm(Form):
 
-    sequence = TextAreaField('Sequence', validators=[
-        DataRequired('Please provide a valid DNA sequence')])
-    #sequence = FileField( validators=[
-    #    DataRequired()])
+    #sequence = TextAreaField('Sequence', validators=[
+    #    DataRequired('Please provide a valid DNA sequence')])
+    sequence = FileField( validators=[
+        FileRequired(), FileAllowed(['fasta', 'fa'], 'Fasta Only!')
+    ])
     k_mer_size_filter = IntegerField(default=3, validators=[
         DataRequired()])
     pattern = StringField(default="####_####", validators=[

@@ -7,5 +7,6 @@ guess_language
 #coverage
 #flask-bootstrap
 
-marshmallow
+#marshmallow
+flask-restful
 webargs

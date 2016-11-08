@@ -2,36 +2,35 @@ from crispr_detect import app
 from flask import render_template, abort, flash, redirect, request, redirect, url_for
 from jinja2 import TemplateNotFound
 from .forms import CrisprFinderForm
-from marshmallow import Schema, fields
+#from marshmallow import Schema, fields
+from flask_restful import reqparse
+from werkzeug.utils import secure_filename
 from webargs.flaskparser import parser
-
+import werkzeug
 import threading
 import os, sys
 import uuid
 from .crispr_detect import FindCRISPRs
 
-
-class CmdSchema(Schema):
-    sequence = fields.Str(required=True)
-
-    k_mer_size_filter = fields.Integer(required=True)
-    pattern = fields.Str(required=True)
-    window_size = fields.Integer(required=True)
-    allowed_mismatch = fields.Integer(required=True)
-    spacer_dr_match_limit = fields.Integer(required=True)
-    min_dr = fields.Integer(required=True)
-    max_dr = fields.Integer(required=True)
-    min_spacer_dr_ratio = fields.Float(required=True)
-    max_spacer_dr_ratio = fields.Float(required=True)
-    first_pass_limit = fields.Integer(required=True)
-    search_tracrrna = fields.Boolean(required=True)
-
-    class Meta:
-        strict = True
-
+def parse_crispr_finder_form(request):
+    parser = reqparse.RequestParser()
+    
+    parser.add_argument('sequence', type=werkzeug.datastructures.FileStorage, location='files')#, required=True)
+    parser.add_argument('k_mer_size_filter', type=int)
+    parser.add_argument('pattern', type=str)
+    parser.add_argument('window_size', type=int)
+    parser.add_argument('allowed_mismatch', type=int)
+    parser.add_argument('spacer_dr_match_limit', type=int)
+    parser.add_argument('min_dr', type=int)
+    parser.add_argument('max_dr', type=int)
+    parser.add_argument('min_spacer_dr_ratio', type=float)
+    parser.add_argument('max_spacer_dr_ratio', type=float)
+    parser.add_argument('first_pass_limit', type=int)
+    parser.add_argument('search_tracrrna', type=bool)
+    return parser.parse_args()
 
 # @copy_current_request_context
-def crispr_finder_job(**args):
+def crispr_finder_runner(**args):
     try:
 
         processing = create_flag_file(args['outputpath'], 'processing')
@@ -64,12 +63,6 @@ def crispr_finder_job(**args):
         os.unlink(processing)
         sys.stdout, sys.stderr = old_stdout, old_stderr
 
-
-def get_dirpath(dirname):
-    #TODO: Take into account the user session for remote access
-    return (os.path.join(app.config['UPLOAD_FOLDER'], dirname))
-
-
 def create_flag_file(basedir, name):
     path = os.path.join(basedir, name)
     with open(path, 'w') as flag:
@@ -89,26 +82,26 @@ def index():
 # @use_args(CmdSchema())
 def crispr_finder():
     if request.method == 'POST':
-        form = CrisprFinderForm(request.form)
+        #form = CrisprFinderForm(request.form) #http://stackoverflow.com/questions/30175285/flask-wtf-upload-file-error
+        form = CrisprFinderForm()
         if form.validate():
-            # print request.form
-            args = parser.parse(CmdSchema, request)
-            # print args
-            # args = {k: v for k, v in args.iteritems() if v != u''}
             job_id = str(uuid.uuid4())
+
+            results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
+            os.mkdir(results_dir)
+
+            args = parse_crispr_finder_form(request)
+            sequence_file = args['sequence']
+            sequence_filename = secure_filename(sequence_file.filename)
+            sequence_filepath = os.path.join(results_dir, sequence_filename)
+            sequence_file.save(sequence_filepath)
+
+            args['inputpath'] = sequence_filepath
+            args['outputpath'] = results_dir
             args['job_id'] = job_id
-            outputpath = get_dirpath(job_id)
-            os.mkdir(outputpath)
-            inputname = 'input.dna'
-            inputpath = os.path.join(outputpath, inputname)
-            with open(inputpath, 'w') as f:
-                f.write(args['sequence'])
-            # args.pop('sequence', None)
-            args['inputpath'] = inputpath
-            args['outputpath'] = outputpath
-            run_crispr = threading.Thread(target=crispr_finder_job, kwargs=args)
+            run_crispr = threading.Thread(target=crispr_finder_runner, kwargs=args)
             run_crispr.start()
-            print(url_for("crispr_finder_result", uuid=job_id))
+            #print(url_for("crispr_finder_result", uuid=job_id))
             return redirect(url_for("crispr_finder_result", uuid=job_id))
         else:
             return render_template('crispr_finder.html', form=form, page_title='CRISPR Finder')
@@ -117,11 +110,11 @@ def crispr_finder():
 
 @app.route('/crispr_finder/result/<uuid>')
 def crispr_finder_result(uuid):
-    flag = os.path.join(get_dirpath(uuid), 'processing')
+    flag = os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing')
     #if not request.script_root:
     #    # this assumes that the 'index' view function handles the path '/'
     #    request.script_root = url_for('/crispr_finder/result/', _external=True)
-    return render_template('crispr_finder_result.html', uuid=uuid, dirpath=get_dirpath(uuid),processing_flag=os.path.isfile(flag))
+    return render_template('crispr_finder_result.html', uuid=uuid, dirpath=os.path.join(app.config['UPLOAD_FOLDER'], uuid), processing_flag=os.path.isfile(flag))
 
 @app.route('/antismash')
 def antismash():
