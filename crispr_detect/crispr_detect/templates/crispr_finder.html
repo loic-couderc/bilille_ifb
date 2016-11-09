@@ -9,9 +9,17 @@
         <h1 class="form-heading">Crispr Finder</h1>
     </div>
     <div class="modal-body">
+
         {# {{ input_field(form, "sequence", "E.g. > Fasta header(s) with DNA sequence(s).") }} #}
         {{ input_field(form, "sequence", class="filestyle") }}
 
+        <div class="panel">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#advanced"> See more parameters </a>
+            </h4>
+          </div>
+	  <div id="advanced" class="panel-body panel-collapse collapse">
         {{ input_field(form, "k_mer_size_filter") }}
         {{ input_field(form, "pattern") }}
         {{ input_field(form, "window_size") }}
@@ -23,6 +31,7 @@
         {{ input_field(form, "max_spacer_dr_ratio") }}
         {{ input_field(form, "first_pass_limit") }}
         {{ input_field(form, "search_tracrrna") }}
+      </div>
     </div>
     <div class="form-group col-md-7">
         <button class="btn btn-success pull-right" type="submit">Submit job</button>
