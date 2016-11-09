@@ -11,6 +11,7 @@ import threading
 import os, sys
 import uuid
 from .crispr_detect import FindCRISPRs
+import ntpath
 
 def parse_crispr_finder_form(request):
     parser = reqparse.RequestParser()
@@ -110,11 +111,19 @@ def crispr_finder():
 
 @app.route('/crispr_finder/result/<uuid>')
 def crispr_finder_result(uuid):
-    flag = os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing')
-    #if not request.script_root:
-    #    # this assumes that the 'index' view function handles the path '/'
-    #    request.script_root = url_for('/crispr_finder/result/', _external=True)
-    return render_template('crispr_finder_result.html', uuid=uuid, dirpath=os.path.join(app.config['UPLOAD_FOLDER'], uuid), processing_flag=os.path.isfile(flag))
+    processing_flag = os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing'))
+    results_path = os.path.join(app.config['UPLOAD_FOLDER'], uuid)
+    #, empty : os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'stdout'))
+    result_files = [{'name' : 'stdout', 'url' : os.path.join('/display', uuid, 'stdout')},
+                    {'name' : 'stderr', 'url' : os.path.join('/display', uuid, 'stderr')}
+    ]
+    if not processing_flag:
+        for fname in os.listdir(os.path.join(results_path,'U')):
+            result_files.append(dict([['name', fname],
+                                      ['url', os.path.join('/display', uuid, 'U', fname)]
+            ]))
+
+    return render_template('crispr_finder_result.html', uuid=uuid, dirpath=results_path, processing_flag=processing_flag, result_files=result_files)
 
 @app.route('/antismash')
 def antismash():

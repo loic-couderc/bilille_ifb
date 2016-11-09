@@ -2,6 +2,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
 
 <div class="modal-header">
     <h1 class="form-heading">Crispr Finder {% if uuid %} : {{ uuid }} {% endif %}</h1>
@@ -16,6 +19,18 @@
     <p>Job status: {% if processing_flag %} Processing <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
 -->
     <p>Processing your results{% if processing_flag %} <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
+    {% if not processing_flag %}
+    {% for file in result_files %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#{{ file.name }}">{{ file.name }}</a>
+            </h4>
+          </div>
+	  <div id="{{ file.name }}" class="panel-body panel-collapse collapse"> <embed class="col-lg-12" src="{{ request.script_root }}{{ file.url }}"> </div>
+        </div>
+    {% endfor %}
+    {% endif %}
 </div>
 
 {% endblock %}
