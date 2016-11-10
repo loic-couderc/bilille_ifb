@@ -1,5 +1,5 @@
 from crispr_detect import app
-from flask import render_template, abort, flash, redirect, request, redirect, url_for
+from flask import render_template, abort, flash, redirect, request, redirect, url_for, jsonify
 from jinja2 import TemplateNotFound
 from .forms import CrisprFinderForm
 #from marshmallow import Schema, fields
@@ -111,6 +111,8 @@ def crispr_finder():
 
 @app.route('/crispr_finder/result/<uuid>')
 def crispr_finder_result(uuid):
+    if ( not os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], uuid)) ):
+        abort(404)
     processing_flag = os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing'))
     results_path = os.path.join(app.config['UPLOAD_FOLDER'], uuid)
     #, empty : os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'stdout'))
@@ -123,7 +125,12 @@ def crispr_finder_result(uuid):
                                       ['url', os.path.join('/display', uuid, 'U', fname)]
             ]))
 
-    return render_template('crispr_finder_result.html', uuid=uuid, dirpath=results_path, processing_flag=processing_flag, result_files=result_files)
+    return render_template('crispr_finder_result.html', uuid=uuid, processing=processing_flag, result_files=result_files)
+
+@app.route('/_processing')
+def processing():
+    uuid = request.args.get('uuid')
+    return jsonify(os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing')))
 
 @app.route('/antismash')
 def antismash():

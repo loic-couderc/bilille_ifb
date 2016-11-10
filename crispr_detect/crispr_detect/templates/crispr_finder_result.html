@@ -2,24 +2,37 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script type=text/javascript src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+
+{% if processing %}
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  function updateWhenProcessFinished() {
+    $.getJSON($SCRIPT_ROOT + '/_processing', {
+      uuid: "{{ uuid }}"
+    }, function(processingBoolean) {
+      if (! processingBoolean.result) {
+        //if ($("#process").length == 0) {//already reloaded, do not refresh
+          location.reload();
+        //}
+      }
+      else {
+        setTimeout(updateWhenProcessFinished, 5000);
+      }
+    });
+  };
+    setTimeout(updateWhenProcessFinished,5000);
+    //updateWhenProcessFinished()
 </script>
+{% endif %}
 
 <div class="modal-header">
     <h1 class="form-heading">Crispr Finder {% if uuid %} : {{ uuid }} {% endif %}</h1>
 </div>
 <div class="modal-body">
-<!--
-    {% if dirpath %}
-    <p>Your result will be located here:
-    <pre> {{ dirpath }} </pre>
-    </p>
-    {% endif %}
-    <p>Job status: {% if processing_flag %} Processing <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
--->
-    <p>Processing your results{% if processing_flag %} <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"> {% else %} Terminated {% endif %}</p>
-    {% if not processing_flag %}
+    {% if processing %}
+     <p id="processing">Processing your results <img src="{{ url_for('static', filename='fonts/ajax-loader.gif') }}" alt="loading"></p>
+    {% else %}
     {% for file in result_files %}
         <div class="panel panel-default">
           <div class="panel-heading">
