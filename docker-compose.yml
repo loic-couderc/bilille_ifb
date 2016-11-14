@@ -20,7 +20,7 @@ services:
       - ANTISMASH_EMAIL_ENCRYPT=TLS
       - ANTISMASH_EMAIL_USER=lcouderc
       - ANTISMASH_EMAIL_PASSWORD=********
-    command: /runsmash/runSMASH --queue redis://redis/0 --workdir /upload --statusdir /upload/status --name runner01 --cpus 4 --long-running
+    command: /runsmash/runSMASH --queue redis://redis/0 --workdir /upload --statusdir /upload/status --name runner01 --long-running
 
   antismash-job-monitor:
     restart: always
