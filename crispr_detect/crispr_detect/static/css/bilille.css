@@ -1,0 +1,8 @@
+
+/* manage glypicon on panel collapsing*/
+a[aria-expanded=true] .glyphicon-plus {
+   display: none;
+}
+a[aria-expanded=false] .glyphicon-minus {
+   display: none;
+}
