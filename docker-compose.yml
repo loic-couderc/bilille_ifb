@@ -54,7 +54,7 @@ services:
     links:
       - antismash-redis:redis
     image: antismash/websmash
-    container_name: site1
+#    container_name: site1
 
 
   site2:
@@ -63,7 +63,7 @@ services:
       - /tmp/cripsr:/tmp
     build:
       context: ./crispr_detect
-    container_name: site2
+#    container_name: site2
 
 #  site2:
 #    restart: always
