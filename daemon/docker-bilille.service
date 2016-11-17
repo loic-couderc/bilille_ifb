@@ -1,0 +1,49 @@
+#[Service]
+#ExecStartPre=-/usr/local/bin/docker-compose -f compose-file.yml down  
+#ExecStart=/usr/local/bin/docker-compose -f compose-file.yml up -d  
+#ExecStop=/usr/local/bin/docker-compose -f compose-file.yml stop
+
+
+############################################################################################
+
+[Unit]
+Description=Bilille Container
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+# override this section in
+# /etc/systemd/system/docker-rocketchat.service.d/setup.conf
+#RestartSec=10
+#Restart=always
+
+#Environment="IP=127.0.0.1"
+#Environment="VOLUME_PREFIX=test-"
+#Environment="CADDYFILE_SUFFIX="
+#Environment="MAIL_URL=smtp://user:pass@smtp.mailprovider.org"
+#Environment="PROJECT_PATH=/path/to/local/clone/of/wit-rocketchat"
+
+#ExecStart=/usr/local/bin/docker-compose --file "${PROJECT_PATH}/docker-compose.yml" up
+#ExecStop=/usr/local/bin/docker-compose  --file "${PROJECT_PATH}/docker-compose.yml" stop
+
+ExecStartPre=-/usr/local/bin/docker-compose -f /root/mydisk/bilille/docker-compose.yml down  
+ExecStart=/usr/local/bin/docker-compose -f /root/mydisk/bilille/docker-compose.yml up -d  
+ExecStop=/usr/local/bin/docker-compose -f /root/mydisk/bilille/docker-compose.yml stop
+
+[Install]
+WantedBy=docker.service
+
+############################################################################################
+
+#[Unit]
+#Description=Redis container
+#Requires=docker.service
+#After=docker.service
+
+#[Service]
+#Restart=always
+#ExecStart=/usr/bin/docker start -a redis_server
+#ExecStop=/usr/bin/docker stop -t 2 redis_server
+
+#[Install]
+#WantedBy=default.target
