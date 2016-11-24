@@ -16,8 +16,8 @@ confs=( "${bilille_install_dir}/antismash/config/settings.py.tpl"
         "${bilille_install_dir}/crispr_detect/config/settings.py.tpl"
         "${bilille_install_dir}/daemon/docker-bilille.conf.tpl"
         "${bilille_install_dir}/docker-compose.yml.tpl"
-        "${bilille_install_dir}/dowload_antismash_databases.sh.tpl"
-        "${bilille_install_dir}/dowload_antismash_example_data.sh.tpl"
+        "${bilille_install_dir}/download_antismash_databases.sh.tpl"
+        "${bilille_install_dir}/download_antismash_example_data.sh.tpl"
         "${bilille_install_dir}/create_output_dir.sh.tpl"
 )
         
@@ -35,7 +35,7 @@ sh "${bilille_install_dir}/download_antismash_databases.sh"
 sh "${bilille_install_dir}/create_output_dir.sh"
 
 ## 3_ setup antismash example
-sh "${bilille_install_dir}/dowload_antismash_example_data.sh.tpl"
+sh "${bilille_install_dir}/download_antismash_example_data.sh"
 
 ## 4_ setup the daemon
 ln -s "${bilille_install_dir}/daemon/docker-bilille.conf" "/etc/init/docker-bilille.conf"
