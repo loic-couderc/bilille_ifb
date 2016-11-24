@@ -12,12 +12,14 @@ respawn limit 3 240
 
 # start the container in the pre-start script
 pre-start script
+    /bin/sh "{{ bilille.install_dir }}/create_output_dir.sh"
+	ln -s "{{ bilille.install_dir }}/antismash/example {{ bilille.output_dir }}/example"
     # wait (if necessary) for our docker context to be accessible
-    while [ ! -f /root/mydisk/bilille/docker-compose.yml ]
+    while [ ! -f {{ bilille.install_dir }}/docker-compose.yml ]
     do
       sleep 1
     done
-    /usr/local/bin/docker-compose -f /root/mydisk/bilille/docker-compose.yml up -d
+    /usr/local/bin/docker-compose -f {{ bilille.install_dir }}/docker-compose.yml up -d
 end script
 
 # run a process that stays up while our docker container is up. Upstart will track this PID
@@ -35,7 +37,7 @@ end script
 post-stop script
     if docker ps | grep -q bilille_;
     then
-        /usr/local/bin/docker-compose -f /root/mydisk/bilille/docker-compose.yml stop
+        /usr/local/bin/docker-compose -f {{ bilille.install_dir }}/docker-compose.yml stop
     fi
 end script
 

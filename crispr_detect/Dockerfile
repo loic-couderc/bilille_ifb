@@ -11,5 +11,7 @@ WORKDIR  /crispr_detect
 RUN pip3 install -r requirements.txt && \
     pip3 install gunicorn
 
+VOLUME ['/upload', '/config']
+
 ENTRYPOINT ["/usr/local/bin/gunicorn"]
-CMD [ "-b", "0.0.0.0:8000", "crispr_detect:app" ]
+CMD ["--env", "CRISPR_DETECT_CONFIG=/config/settings.py",  "-b", "0.0.0.0:8000", "crispr_detect:app" ]

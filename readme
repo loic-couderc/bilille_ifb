@@ -1,0 +1,26 @@
+# Put bilille directory at the emplacement you want, then 
+# update config.ini accordingly
+# run the installer
+# bash install.sh
+
+
+# prerequis
+
+# setup docker
+apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+echo deb https://apt.dockerproject.org/repo ubuntu-trusty main | tee /etc/apt/sources.list.d/docker.list
+apt-get update
+apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual# && reboot
+#rm /etc/default/docker
+apt-get install -y docker-engine
+
+# setup docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+moto 
+
+# update os
+apt-get update && apt-get -y --force-yes upgrade
+
+# free some space
+apt-get clean && apt-get -y autoremove && apt-get autoremove --purge && reboot

@@ -5,7 +5,8 @@ from werkzeug import SharedDataMiddleware
 #from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_object('default_config')
+app.config.from_envvar('CRISPR_DETECT_CONFIG', silent=True)
 #crispr_detect.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #Bootstrap(crispr_detect)
 #proxied = FlaskReverseProxied(app)
