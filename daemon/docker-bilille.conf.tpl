@@ -13,7 +13,7 @@ respawn limit 3 240
 # start the container in the pre-start script
 pre-start script
     /bin/sh "{{ bilille.install_dir }}/create_output_dir.sh"
-	ln -s "{{ bilille.install_dir }}/antismash/example {{ bilille.output_dir }}/example"
+	/bin/ln -s -f "{{ bilille.install_dir }}/antismash/example" "{{ bilille.output_dir }}/example"
     # wait (if necessary) for our docker context to be accessible
     while [ ! -f {{ bilille.install_dir }}/docker-compose.yml ]
     do
