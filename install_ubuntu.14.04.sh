@@ -20,7 +20,7 @@ confs=( "${bilille_install_dir}/antismash/config/settings.py.tpl"
         "${bilille_install_dir}/download_antismash_example_data.sh.tpl"
         "${bilille_install_dir}/create_output_dir.sh.tpl"
 )
-        
+
 for cfg in ${confs[@]}; do
 	j2 ${cfg} "${bilille_install_dir}/config.ini" > "${cfg%.*}"
 done
@@ -38,7 +38,7 @@ sh "${bilille_install_dir}/create_output_dir.sh"
 sh "${bilille_install_dir}/download_antismash_example_data.sh"
 
 ## 4_ setup the daemon
-ln -s "${bilille_install_dir}/daemon/docker-bilille.conf" "/etc/init/docker-bilille.conf"
+ln -f -s "${bilille_install_dir}/daemon/docker-bilille.conf" "/etc/init/docker-bilille.conf"
 initctl reload-configuration
 #systemctl enable
 
