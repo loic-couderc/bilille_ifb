@@ -12,7 +12,6 @@ if [ ! -d "{{ bilille.databases_dir }}" ]; then
 	gunzip Pfam-A.hmm.gz
 	apt-get install hmmer
 	hmmpress Pfam-A.hmm #prepare an HMM database for hmmscan
-	rm Pfam-A.hmm
 	
 	## 2_ set up the ClusterBlast database
 	mkdir -p "{{ bilille.databases_dir }}/clusterblast" && cd "{{ bilille.databases_dir }}/clusterblast"
