@@ -23,4 +23,12 @@ moto
 apt-get update && apt-get -y --force-yes upgrade
 
 # free some space
-apt-get clean && apt-get -y autoremove && apt-get autoremove --purge && reboot
+apt-get remove -y --purge x2go*
+apt-get remove -y --purge xserver-xorg-core
+apt-get remove -y --purge libreoffice-core libreoffice-common
+apt-get remove -y --purge firefox
+apt-get autoremove  -y --purge linux-image-extra-3.13.0-34-generic linux-image-extra-3.13.0-79-generic linux-image-3.13.0-34-generic linux-image-extra-3.13.0-79-generic
+apt-get clean && apt-get autoremove --purge && reboot
+
+
+486160
