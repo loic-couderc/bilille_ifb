@@ -8,12 +8,10 @@ class CrisprFinderForm(Form):
     #sequence = TextAreaField('Sequence', validators=[
     #    DataRequired('Please provide a valid DNA sequence')])
     sequence = FileField( validators=[
-        FileRequired(), FileAllowed(['fasta', 'fa'], 'Fasta Only!')
+        FileRequired(), FileAllowed(['fasta', 'fa'], 'Fasta only (.fa/.fasta)!')
     ])
-    k_mer_size_filter = IntegerField(default=3, validators=[
-        DataRequired()])
-    pattern = StringField(default="####_####", validators=[
-        DataRequired()])
+    k_mer_size_filter = IntegerField(default=3)
+    pattern = StringField(default="####_####")
     window_size = IntegerField(default=200)
     allowed_mismatch = IntegerField(default=1)
     spacer_dr_match_limit = IntegerField(default=20)

@@ -13,7 +13,7 @@
         {# {{ input_field(form, "sequence", "E.g. > Fasta header(s) with DNA sequence(s).") }} #}
         {{ input_field(form, "sequence", class="filestyle") }}
 
-        <div class="panel">
+        <div class="panel {% if form.errors %}panel-danger{% endif %}">
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" aria-expanded=false href="#advanced">
