@@ -9,6 +9,7 @@
         {% endif %}
     </div>
     <p class="col-md-5 help-block">
-        {{ form[field_name].errors[0] }}
+		<small id="{{ field_name }}Help" class="form-text text-muted">{{ form[field_name].description }}</small><br>
+        <small>{{ form[field_name].errors[0] }}</small>
 </div>
 {% endmacro %}
