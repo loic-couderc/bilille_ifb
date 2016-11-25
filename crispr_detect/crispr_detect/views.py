@@ -41,7 +41,8 @@ def crispr_finder_runner(**args):
         with open(stdout_file, 'w') as current_stdout, open(stderr_file, 'w') as current_stderr:
             old_stdout, old_stderr = sys.stdout, sys.stderr
             sys.stdout, sys.stderr = current_stdout, current_stdout
-            findCRISPRs = FindCRISPRs(args['inputpath'],
+            print('Running crispr_detect with the followings args: %s' % args)
+            ordered_args = [ args['inputpath'],
                                       args['outputpath'],
                                       args['k_mer_size_filter'],
                                       args['pattern'],
@@ -53,7 +54,9 @@ def crispr_finder_runner(**args):
                                       args['min_spacer_dr_ratio'],
                                       args['max_spacer_dr_ratio'],
                                       args['first_pass_limit'],
-                                      args['search_tracrrna'])
+                                      args['search_tracrrna']]
+            print('Generated Cmd: FindCRISPRs(*%s)' % ordered_args)
+            findCRISPRs = FindCRISPRs(*ordered_args)
             findCRISPRs.analyze()
             #create_flag_file(args['outputpath'], 'terminated')
     except:
@@ -90,7 +93,6 @@ def crispr_finder():
 
             results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
             os.mkdir(results_dir)
-
             args = parse_crispr_finder_form(request)
             sequence_file = args['sequence']
             sequence_filename = secure_filename(sequence_file.filename)
@@ -116,15 +118,14 @@ def crispr_finder_result(uuid):
     processing_flag = os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'processing'))
     results_path = os.path.join(app.config['UPLOAD_FOLDER'], uuid)
     #, empty : os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'stdout'))
-    result_files = [{'name' : 'stdout', 'url' : os.path.join('/display', uuid, 'stdout')},
-                    {'name' : 'stderr', 'url' : os.path.join('/display', uuid, 'stderr')}
-    ]
+    result_files = []
     if not processing_flag:
         for fname in os.listdir(os.path.join(results_path,'U')):
             result_files.append(dict([['name', fname],
                                       ['url', os.path.join('/display', uuid, 'U', fname)]
             ]))
-
+    result_files.extend([{'name' : 'stdout', 'url' : os.path.join('/display', uuid, 'stdout')},
+                    {'name' : 'stderr', 'url' : os.path.join('/display', uuid, 'stderr')}])
     return render_template('crispr_finder_result.html', uuid=uuid, processing=processing_flag, result_files=result_files)
 
 @app.route('/_processing')
