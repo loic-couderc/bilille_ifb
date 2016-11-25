@@ -3,7 +3,7 @@ from flask import render_template, abort, flash, redirect, request, redirect, ur
 from jinja2 import TemplateNotFound
 from .forms import CrisprFinderForm
 #from marshmallow import Schema, fields
-from flask_restful import reqparse
+from flask_restful import reqparse, inputs
 from werkzeug.utils import secure_filename
 from webargs.flaskparser import parser
 import werkzeug
@@ -27,7 +27,7 @@ def parse_crispr_finder_form(request):
     parser.add_argument('min_spacer_dr_ratio', type=float)
     parser.add_argument('max_spacer_dr_ratio', type=float)
     parser.add_argument('first_pass_limit', type=int)
-    parser.add_argument('search_tracrrna', type=bool)
+    parser.add_argument('search_tracrrna', type=inputs.boolean)
     return parser.parse_args()
 
 # @copy_current_request_context
