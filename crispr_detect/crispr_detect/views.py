@@ -120,10 +120,11 @@ def crispr_finder_result(uuid):
     #, empty : os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], uuid, 'stdout'))
     result_files = []
     if not processing_flag:
-        for fname in os.listdir(os.path.join(results_path,'U')):
-            result_files.append(dict([['name', fname],
-                                      ['url', os.path.join('/display', uuid, 'U', fname)]
-            ]))
+        if os.path.isdir(os.path.join(results_path,'U')):
+            for fname in os.listdir(os.path.join(results_path,'U')):
+                result_files.append(dict([['name', fname],
+                                          ['url', os.path.join('/display', uuid, 'U', fname)]
+                ]))
     result_files.extend([{'name' : 'stdout', 'url' : os.path.join('/display', uuid, 'stdout')},
                     {'name' : 'stderr', 'url' : os.path.join('/display', uuid, 'stderr')}])
     return render_template('crispr_finder_result.html', uuid=uuid, processing=processing_flag, result_files=result_files)
