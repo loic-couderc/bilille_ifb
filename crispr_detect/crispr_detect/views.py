@@ -107,7 +107,7 @@ def crispr_finder():
             #print(url_for("crispr_finder_result", uuid=job_id))
             return redirect(url_for("crispr_finder_result", uuid=job_id))
         else:
-            return render_template('crispr_finder.html', form=form, page_title='CRISPR Finder')
+            return render_template('crispr_finder.html', form=form, page_title='CRISPR Finder'), 400
     return render_template('crispr_finder.html', form=CrisprFinderForm(), page_title='CRISPR Finder')
 
 
@@ -137,11 +137,6 @@ def processing():
 @app.route('/antismash')
 def antismash():
 	return redirect("/antismash")
-
-# TODO : fonction runner qui reccupère les données du formulaire, puis créé le dossier de travail et lance le job dans un thread
-#@use_kwargs(CmdSchema())
-#def runner():
-#    pass
 
 """
 findCRISPRs = FindCRISPRs(args['inputpath'],
