@@ -3,12 +3,14 @@ from wtforms import TextAreaField, StringField, IntegerField, FloatField, Select
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
+
 class CrisprFinderForm(Form):
 
-    #sequence = TextAreaField('Sequence', validators=[
+    # sequence = TextAreaField('Sequence', validators=[
     #    DataRequired('Please provide a valid DNA sequence')])
-    sequence = FileField( validators=[
-        FileRequired(), FileAllowed(['fasta', 'fa'], 'Fasta only (.fa/.fasta)!')
+    sequence = FileField(validators=[
+        FileRequired(), FileAllowed(
+            ['fasta', 'fa'], 'Fasta only (.fa/.fasta)!')
     ])
     k_mer_size_filter = IntegerField(default=3,
                                      description='is used to compare segments of DRs and spacers')
@@ -35,5 +37,5 @@ class CrisprFinderForm(Form):
                                      label='Max Spacer DR Ratio')
     first_pass_limit = IntegerField(default=200,
                                     description='is maximum allowed distance between two regions with repeats')
-    search_tracrrna = SelectField(choices=[('False','no'),('True','yes')], default='False', description='',
+    search_tracrrna = SelectField(choices=[('False', 'no'), ('True', 'yes')], default='False', description='',
                                   label='Search tracrRNA')
