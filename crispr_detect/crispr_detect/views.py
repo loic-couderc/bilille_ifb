@@ -148,3 +148,7 @@ def processing():
 @app.route('/antismash')
 def antismash():
     return redirect("/antismash")
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
