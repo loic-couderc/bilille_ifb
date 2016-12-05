@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import re
 import os
 import sys
@@ -1493,19 +1494,39 @@ class Pattern:
 	def __len__ (self):
 		return self.length
 
-# allows to change SOME attributes as well as defines default values
-#class Interface:
-#	def __init__ (self, file_loc, output_loc, ):
-
-# ----------------- Test ------------------
-
 if __name__ == '__main__':
-	start_time = time.time()
-	file_loc = sys.argv[1]
-	output_loc = sys.argv[2]
-	# file_path, output_path, k_mer_size_filter, pattern, window_size, allowed_mismatch, spacer_dr_match_limit, min_DR, max_DR, min_spacer_DR_ratio, max_spacer_DR_ratio, first_pass_limit):
-	findCRISPRs = FindCRISPRs(file_loc, output_loc, 3, "####_####", 200, 1, 20, 23, 55, 0.6, 2.5, 200, False)
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--fasta', type=str, required=True)
+	parser.add_argument('--output_dir', type=str, required=True)
+	parser.add_argument('--kmer_size_filter', type=int, help='is used to compare segments of DRs and spacers', default=3)
+	parser.add_argument('--pattern', type=str, help="is a combination of '#' (character) and '_' (space) used as seeds during second pass. First pass used continuous seed of length k_mer_size (number of '#')", default="####_####")
+	parser.add_argument('--window_size', type=int, help="defines size of window in which k_mers will be searched for", default=200)
+	parser.add_argument('--allowed_mismatch', type=int, help="defines a number of mismatch allowed in repeat", default=1)
+	parser.add_argument('--spacer_dr_match_limit', type=int, help="is a maximum number of matches of length k_mer_size_filter per spacer between DR and spacer", default=20)
+	parser.add_argument('--min_dr', type=int, help="defines minimum length in bp of repeat part", default=23)
+	parser.add_argument('--max_dr', type=int, help="defines maximum length in bp of repeat part", default=55)
+	parser.add_argument('--min_spacer_dr_ratio', type=float, help="is minimum quotient allowed length of spacer versus DR", default=0.6)
+	parser.add_argument('--max_spacer_dr_ratio', type=float, help="is maximum quotient allowed length of spacer versus DR", default=2.5)
+	parser.add_argument('--first_pass_limit', type=int, help="is maximum allowed distance between two regions with repeats", default=200)
+	parser.add_argument('--search_tracrrna', action='store_true', default=False)
+
+	args = vars(parser.parse_args())
+	args = [args['fasta'],
+			args['output_dir'],
+			args['kmer_size_filter'],
+			args['pattern'],
+			args['window_size'],
+			args['allowed_mismatch'],
+			args['spacer_dr_match_limit'],
+			args['min_dr'],
+			args['max_dr'],
+			args['min_spacer_dr_ratio'],
+			args['max_spacer_dr_ratio'],
+			args['first_pass_limit'],
+			args['search_tracrrna']]
+
+	findCRISPRs = FindCRISPRs(*args)
 	findCRISPRs.analyze()
-	print("--- %s seconds ---" % (time.time() - start_time))
 
 
