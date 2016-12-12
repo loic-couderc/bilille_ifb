@@ -122,6 +122,10 @@ WORKDIR /websmash
 RUN pip install -r requirements.txt && \
     pip install gunicorn
 
+RUN apt-get install -y unzip
+RUN curl -L http://antismash.secondarymetabolites.org/upload/example/NC_003888.3.zip > NC_003888.3.zip && unzip NC_003888.3.zip
+RUN mv 2acd7e9e-4872-48d4-bae9-cac30ec52622 example && rm NC_003888.3.zip
+
 #+-------------------+
 #| 5_ install crispr |
 #+-------------------+

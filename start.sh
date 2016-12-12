@@ -22,6 +22,7 @@ echo "run the antiSMASH job runner(s)"
 
 #3_ run the antiSMASH job status monitor
 echo "the antiSMASH job runner(s)"
+ln -s /websmash/example/ /websmash/upload/example
 /runsmash/watchStatus --queue "redis://localhost:6379/0" --statusdir /websmash/upload/status&
 
 #4_ run nginx
