@@ -25,11 +25,11 @@ install:
     bilille
 
 script:
-docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && python -m unittest discover tests"
-docker exec -i -t bilille /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
-docker exec -i -t bilille /bin/bash -c "run_crispr_detect -h"
-docker exec -i -t bilille /bin/bash -c "run_antismash -h"
-curl -I localhost
+  - docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && python -m unittest discover tests"
+  - docker exec -i -t bilille /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
+  - docker exec -i -t bilille /bin/bash -c "run_crispr_detect -h"
+  - docker exec -i -t bilille /bin/bash -c "run_antismash -h"
+  - curl -I localhost
 
 after_script:
-- docker rm -f bilille
+  - docker rm -f bilille
