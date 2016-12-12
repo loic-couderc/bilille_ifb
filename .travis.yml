@@ -1,5 +1,5 @@
 language: python
-
+sudo: required
 services:
   - docker
 
@@ -7,11 +7,10 @@ before_install:
   - mkdir /tmp/{crispr,websmash}
   - mkdir -p /tmp/databases/pfam && cd /tmp/databases/pfam
   - curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
-  - gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
+  - gunzip Pfam-A.hmm.gz && sudo apt-get install hmmer && hmmpress Pfam-A.hmm
   - mkdir -p /tmp/databases/clusterblast && cd /tmp/databases/clusterblast
   - wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
   - tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
-  - wget https://raw.githubusercontent.com/loic-couderc/bilille_ifb/master/config.ini
 
 install:
   - docker build -t bilille .
