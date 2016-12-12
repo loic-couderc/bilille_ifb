@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - mkdir {crispr,websmash}
+  - mkdir /tmp/{crispr,websmash}
   - mkdir -p /tmp/databases/pfam && cd /tmp/databases/pfam
   - curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
   - gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
