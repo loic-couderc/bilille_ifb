@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 from crispr_detect import app
 from .forms import CrisprFinderForm
-from .crispr_detect import FindCRISPRs
+from .CRISPRFinder_beta2_11 import FindCRISPRs
 
 
 def parse_crispr_finder_form():
