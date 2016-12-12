@@ -90,8 +90,7 @@ WORKDIR /antismash-${ANTISMASH_VERSION}/antismash/generic_modules/smcogs/
 RUN hmmpress smcogs.hmm
 
 WORKDIR /usr/local/bin
-#RUN curl -L https://bitbucket.org/antismash/docker/raw/c63856cb69d7e51893e510118dec1ea91f09afee/standalone-lite/run > run_antismash
-#RUN chmod 755 run_antismash
+RUN ln -s /antismash-${ANTISMASH_VERSION}/run_antismash.py
 RUN ln -s /eficaz/bin/eficaz2.5
 
 RUN curl -L https://bitbucket.org/antismash/docker/raw/c63856cb69d7e51893e510118dec1ea91f09afee/runsmash-lite/entrypoint.sh > /entrypoint.sh
@@ -132,20 +131,24 @@ RUN apt-get update && apt-get install -y \
     virtualenv
 
 #Replace this by a git clone when repo
-ADD ./crispr_detect /crispr_detect 
+ADD ./crispr_detect /crispr_detect
 WORKDIR  /crispr_detect
-RUN virtualenv --python=/usr/bin/python3 crispr_detect/flask
-RUN source crispr_detect/flask/bin/activate && pip install -r requirements.txt && \
-    pip install gunicorn && \
-    deactivate
+RUN rm -rf flask
+RUN virtualenv --python=/usr/bin/python3 flask
+RUN flask/bin/pip install -r requirements.txt
+RUN flask/bin/pip install gunicorn
 
 #+------------------------+
 #| 6_ setup command lines |
 #+------------------------+
 WORKDIR /usr/local/bin
-RUN ln -s /antismash-${ANTISMASH_VERSION}/run_antismash.py run_antismash
+
+RUN apt-get -y install python-scipy #to get ride of "UserWarning: cobra.io.mat is not be functional: ImportError No module named scipy.io"
+
+ADD ./cmd_line/run_antismash .
 RUN chmod 755 run_antismash
-RUN ln -s /crispr_detect/crispr_detect/crispr_detect.py  > /usr/local/bin/run_crispr_detect
+
+ADD ./cmd_line/run_crispr_detect .
 RUN chmod 755 /usr/local/bin/run_crispr_detect
 
 #+------------------------------+
@@ -159,5 +162,5 @@ RUN pip install j2cli
 WORKDIR /
 ADD ./start.sh /start.sh
 RUN chmod 755 /start.sh
-VOLUME [ "/config", "/upload", "/databases", "/eficaz" ]
+VOLUME [ "/config", "/websmash/upload/", "/crispr_detect/upload/", "/databases", "/eficaz" ]
 ENTRYPOINT /start.sh

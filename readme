@@ -1,19 +1,27 @@
 #Building of docker image
 
+0_ Make sur to install databases as mentionned here: http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
+
 1_ Build docker image:
 docker build -t bilille .
 
 2_ run the container
+
 docker run --rm --name bilille \
 --publish 80:80 \
 --volume /home/lcouderc/workspace/bilille_docker_only:/config:ro \
 --volume /data/databases:/databases:ro \
---volume /tmp:/upload:rw \
+--volume /tmp/crispr:/crispr_detect/upload:rw \
+--volume /tmp/websmash:/websmash/upload:rw \
 bilille
 
-3_ Use your favorite navigator and connect to localhost
+3_ test
+docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
+docker exec -i -t bilille /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
+docker exec -i -t bilille /bin/bash -c "run_crispr_detect -h"
+docker exec -i -t bilille /bin/bash -c "run_antismash -h"
+curl -I localhost
 
-
-docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images -q)
+4_ Use your favorite navigator and connect to localhost
 
 

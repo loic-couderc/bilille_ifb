@@ -8,29 +8,31 @@
 <div class="container-fluid">
 	<img src="{{ url_for('static', filename='fonts/bilille.png') }}" class="media img-responsive center-block">
 	<hr>
-	<p class="alert alert-danger">This appliance is not intented to works without a virtual disk attached. Make sur to have one before starting your analyses.</p>
 	
 	<h1>Welcome</h1>
+	<br>
+	<p class="text-info">It is strongly recommanded to attached a disk before performing any analysis.</p>
+	<br>
 	<p>
 		This appliance provides 2 tools dedicated to bacterial/fungal analysis
-		<ol>
-			<li> <a href="{{ url_for('antismash', _external=True) }}" target="_blank">Antismash</a>: antiSMASH allows the rapid genome-wide identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genomes</li>
-			<li> <a href="{{ url_for('crispr_finder') }}">Crispr_detect</a>: Crispr_detect as the name suggests let you disover CRISPRs</li>
-		</ol>
 	</p>
+	<ol>
+		<li> <a href="{{ url_for('antismash', _external=True) }}" target="_blank">Antismash</a>: antiSMASH allows the rapid genome-wide identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genomes</li>
+		<li> <a href="{{ url_for('crispr_finder') }}">Crispr_detect</a>: Crispr_detect as the name suggests let you disover CRISPRs</li>
+	</ol>
+	<br>
 	<p>
 		This tools can be run with command lines.<br>
-		Usage:
-		<ol>
-			<li>use a SSH client:<code>ssh -A -p 22 root@&lt;ip&gt;</code></li>
-			<li>connect to docker container:<code>docker exec -i -t bilille /bin/bash</code>
-			<li><code>run_antismash /upload/&lt;input file&gt; /upload/&lt;output directory&gt; [antismash options]</code></li>
-			<li><code>run_crispr_detect --fasta /upload/&lt;input file&gt; --output_dir /upload/&lt;output directory&gt; [crispr options]</code></li>
-			<small>(The <code>/upload/</code> container dir is mounted on the VM <code>/root/mydisk/bilille/</code>. Please, use this directory to perform your analyses.)</small>
-		</ol>
-	
 	</p>
-	
-	
+	<ol>
+		<li>use a SSH client: <code>ssh -A -p 22 root@&lt;ip&gt;</code></li>
+		<li>put your input file into <code class='text-info'>{{ config['WEBSMASH_OUTPUT_MOUNT'] }}</code> (to run antismash) or <code class='text-info'>{{ config['CRISPR_OUPUT_MOUNT'] }}</code> (to run crispr_detect)
+		<li>connect to docker container: <code>docker exec -i -t bilille /bin/bash</code>
+		<li>run antismash: <code>run_antismash &lt;input file name&gt; &lt;output directory name&gt; [antismash options]</code></li>
+		<li>run crispr detect: <code>run_crispr_detect &lt;input file name&gt; &lt;output directory name&gt; [crispr options]</code></li>
+	</ol>
+	<p>
+		If you want more info on options, you can use use the flag	<code>-h/--help</code>.<br>
+	</p>
 </div>
 {% endblock %}

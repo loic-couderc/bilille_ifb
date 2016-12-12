@@ -1,0 +1,19 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+
+CMD="/crispr_detect/crispr_detect/CRISPRFinder_beta2_11.py"
+case $1 in
+    -h|--help)
+    $CMD -h
+    shift # past argument
+    ;;
+    *)
+    readonly INFILE=$1
+    readonly OUTDIR=$2
+    shift
+    shift
+    cd /crispr_detect/upload/ && $CMD $@ --fasta /crispr_detect/upload/${INFILE} --output_dir /crispr_detect/upload/${OUTDIR}
+    ;;
+esac
+

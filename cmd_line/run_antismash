@@ -1,0 +1,19 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+
+CMD="/usr/local/bin/run_antismash.py"
+case $1 in
+    -h|--help)
+    $CMD -h
+    shift # past argument
+    ;;
+    *)
+    readonly INFILE=$1
+    readonly OUTDIR=$2
+    shift
+    shift
+    cd /websmash/upload/ && $CMD $@ /websmash/upload/${INFILE} --outputfolder /websmash/upload/${OUTDIR}
+    ;;
+esac
+
