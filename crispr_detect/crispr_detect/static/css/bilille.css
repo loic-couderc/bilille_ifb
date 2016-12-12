@@ -6,3 +6,9 @@ a[aria-expanded=true] .glyphicon-plus {
 a[aria-expanded=false] .glyphicon-minus {
    display: none;
 }
+
+code {
+    background-color: #f7f7f9;
+    color: #d14;
+    padding: 2px 4px;
+}
