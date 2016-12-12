@@ -1,28 +1,26 @@
 language: python
-sudo: required
 
 services:
   - docker
 
 before_install:
-  - mkdir -p /ifb/bilille_ifb/pfam && cd /ifb/bilille_ifb/pfam
+  - mkdir {crispr,websmash}
+  - mkdir -p /tmp/databases/pfam && cd /tmp/databases/pfam
   - curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
   - gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
-  - mkdir -p /ifb/bilille_ifb/clusterblast && cd /ifb/bilille_ifb/clusterblast
+  - mkdir -p /tmp/databases/clusterblast && cd /tmp/databases/clusterblast
   - wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
   - tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
   - wget https://raw.githubusercontent.com/loic-couderc/bilille_ifb/master/config.ini
-  - sed -i 's|/tmp/crispr|/root/mydisk/bilille_ifb/crispr|' config.ini
-  - sed -i 's|/tmp/websmash|/root/mydisk/bilille_ifb/websmash|' config.ini
 
 install:
   - docker build -t bilille .
   - docker run --name bilille \
     --publish 80:80 \
     --volume .:/config:ro \
-    --volume /ifb/bilille_ifb:/databases:ro \
-    --volume /tmp/crispr|/root/mydisk/bilille_ifb/crispr:/crispr_detect/upload:rw \
-    --volume /root/mydisk/bilille_ifb/websmash:/websmash/upload:rw \
+    --volume /tmp/databases:/databases:ro \
+    --volume /tmp/crispr:/crispr_detect/upload:rw \
+    --volume /tmp/websmash:/websmash/upload:rw \
     bilille
 
 script:
