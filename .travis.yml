@@ -22,6 +22,7 @@ install:
     --volume /tmp/crispr:/crispr_detect/upload:rw
     --volume /tmp/websmash:/websmash/upload:rw
     bilille
+  - sleep 10 #sleep to give the time to apps to be up
 
 script:
   - docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
