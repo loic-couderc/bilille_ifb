@@ -11,7 +11,7 @@ before_install:
   - mkdir -p /tmp/databases/clusterblast && cd /tmp/databases/clusterblast
   - wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
   - tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
-  - cd ${TRAVIS_BUILD_DIR}/loic-couderc/bilille_ifb
+  - cd ${TRAVIS_BUILD_DIR}
 
 install:
   - docker build -t bilille .
