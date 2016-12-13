@@ -15,7 +15,7 @@ before_install:
 
 install:
   - docker build -t bilille .
-  - docker run --name bilille
+  - docker run -d --name bilille
     --publish 80:80
     --volume $TRAVIS_BUILD_DIR:/config:ro
     --volume /tmp/databases:/databases:ro
