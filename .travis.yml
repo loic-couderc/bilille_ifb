@@ -17,7 +17,7 @@ install:
   - docker build -t bilille .
   - docker run --name bilille
     --publish 80:80
-    --volume .:/config:ro
+    --volume $TRAVIS_BUILD_DIR:/config:ro
     --volume /tmp/databases:/databases:ro
     --volume /tmp/crispr:/crispr_detect/upload:rw
     --volume /tmp/websmash:/websmash/upload:rw
