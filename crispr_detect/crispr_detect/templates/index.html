@@ -26,7 +26,7 @@
 	</p>
 	<ol>
 		<li>use a SSH client: <code>ssh -A -p 22 root@&lt;ip&gt;</code></li>
-		<li>put your input file into <code class='text-info'>{{ config['WEBSMASH_OUTPUT_MOUNT'] }}</code> (to run antismash) or <code class='text-info'>{{ config['CRISPR_OUPUT_MOUNT'] }}</code> (to run crispr_detect)
+		<li>put your input file into <code class='text-info'>{{ config['WEBSMASH_OUTPUT_MOUNT'] }}</code> (to run antismash) or <code class='text-info'>{{ config['CRISPR_OUTPUT_MOUNT'] }}</code> (to run crispr_detect)
 		<li>connect to docker container: <code>docker exec -i -t bilille /bin/bash</code>
 		<li>run antismash: <code>run_antismash &lt;input file name&gt; &lt;output directory name&gt; [antismash options]</code></li>
 		<li>run crispr detect: <code>run_crispr_detect &lt;input file name&gt; &lt;output directory name&gt; [crispr options]</code></li>
