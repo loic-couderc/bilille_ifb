@@ -11,10 +11,12 @@ before_install:
   - mkdir -p /tmp/databases/clusterblast && cd /tmp/databases/clusterblast
   - wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
   - tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
+  - pip install --user https://github.com/goldmann/docker-squash/archive/master.zip
   - cd ${TRAVIS_BUILD_DIR}
 
 install:
   - docker build -t bilille .
+  - docker-squash bilille #https://github.com/goldmann/docker-squash/
   - docker run -d --name bilille
     --publish 80:80
     --volume $TRAVIS_BUILD_DIR:/config:ro
