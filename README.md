@@ -6,6 +6,11 @@
 	```bash
 	docker build -t bilille .
 	```
+	you can save some space by "squashing" the image (https://github.com/goldmann/docker-squash/):
+	```bash
+	pip install https://github.com/goldmann/docker-squash/archive/master.zip
+	docker-squash bilille
+	```
 
 2. run the container (update path accordingly to your environment)
 	```bash
@@ -29,3 +34,10 @@
 	```
 
 4. Use your favorite navigator and connect to localhost
+
+5. Optional (push image)
+	```bash
+	docker tag <id> lcouderc/bilille_ifb:latest
+	docker login
+	docker push lcouderc/bilille_ifb
+	```
