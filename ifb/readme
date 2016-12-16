@@ -47,7 +47,7 @@ mkdir -p /ifb/bilille_ifb/databases/{pfam,clusterblast}
 # build image (until we provide a repo)
 docker volume ls -qf dangling=true | xargs -r docker volume rm
 cd /ifb/bilille_ifb/
-docker build -t bilille .
+#docker build -t bilille .
 # setup daemon
 cp ifb/daemon/docker-bilille.conf /etc/init/docker-bilille.conf
 initctl reload-configuration
