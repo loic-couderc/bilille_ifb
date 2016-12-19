@@ -160,8 +160,16 @@ RUN chmod 755 /usr/local/bin/run_crispr_detect
 #+------------------------------+
 RUN pip install j2cli
 
+#+---------+
+# 8_ clean |
+#+---------+
+RUN apt-get autoremove --purge -y git curl
+RUN rm -rf /usr/share/doc/*
+RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && apt-get autoremove --purge -y
+
 #+---------------------+
-#| 8_ run all services |
+#| 9_ run all services |
 #+---------------------+
 WORKDIR /
 ADD ./start.sh /start.sh
