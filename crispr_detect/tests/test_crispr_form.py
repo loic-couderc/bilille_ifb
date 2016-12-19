@@ -63,7 +63,7 @@ class CrisprFormTestCase(unittest.TestCase):
     def parse_uuid(self, response):
         # Crispr Finder  : 84771680-68bd-4807-9ded-cf7fd7324364
         match = re.search(
-            r'Crispr Finder\s+:\s+([\-\w)]+)', str(response.data))
+            r'CRISPRDetect\s+:\s+([\-\w)]+)', str(response.data))
         return match.group(1)
 
     def parse_cmd_parameters(self, string):

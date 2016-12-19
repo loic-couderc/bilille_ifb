@@ -88,7 +88,7 @@ def index():
                            user=user)
 
 
-@app.route('/crispr_finder/', methods=['GET', 'POST'])
+@app.route('/crispr_detect/', methods=['GET', 'POST'])
 # @use_args(CmdSchema())
 def crispr_finder():
     if request.method == 'POST':
@@ -119,7 +119,7 @@ def crispr_finder():
     return render_template('crispr_finder.html', form=CrisprFinderForm(), page_title='CRISPR Finder')
 
 
-@app.route('/crispr_finder/result/<uuid>')
+@app.route('/crispr_detect/result/<uuid>')
 def crispr_finder_result(uuid):
     if not os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], uuid)):
         abort(404)
