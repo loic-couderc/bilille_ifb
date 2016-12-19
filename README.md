@@ -9,7 +9,7 @@
 	you can save some space by "squashing" the image (https://github.com/goldmann/docker-squash/):
 	```bash
 	pip install https://github.com/goldmann/docker-squash/archive/master.zip
-	docker-squash bilille
+	docker-squash bilille -t bilille
 	```
 
 2. run the container (update path accordingly to your environment)
