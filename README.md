@@ -4,31 +4,31 @@
 
 1. Build docker image:
 	```bash
-	docker build -t bilille .
+	docker build -t microbannot .
 	```
 	you can save some space by "squashing" the image (https://github.com/goldmann/docker-squash/):
 	```bash
 	pip install https://github.com/goldmann/docker-squash/archive/master.zip
-	docker-squash bilille -t bilille
+	docker-squash microbannot -t microbannot
 	```
 
 2. run the container (update path accordingly to your environment)
 	```bash
-	docker run --rm --name bilille \
+	docker run --rm --name microbannot \
 	--publish 80:80 \
-	--volume /home/lcouderc/workspace/bilille_docker_only:/config:ro \
+	--volume /home/lcouderc/workspace/microbannot:/config:ro \
 	--volume /data/databases:/databases:ro \
 	--volume /tmp/crispr:/crispr_detect/upload:rw \
 	--volume /tmp/websmash:/websmash/upload:rw \
-	bilille
+	microbannot
 	```
 
 3. test
 	```bash
-	docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
-	docker exec -i -t bilille /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
-	docker exec -i -t bilille /bin/bash -c "run_crispr_detect -h"
-	docker exec -i -t bilille /bin/bash -c "run_antismash -h"
+	docker exec -i -t microbannot /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
+	docker exec -i -t microbannot /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
+	docker exec -i -t microbannot /bin/bash -c "run_crispr_detect -h"
+	docker exec -i -t microbannot /bin/bash -c "run_antismash -h"
 	curl -I localhost
 	curl -I http://localhost/upload/example/index.html
 	```
@@ -37,7 +37,7 @@
 
 5. Optional (push image)
 	```bash
-	docker tag <id> lcouderc/bilille_ifb:latest
+	docker tag <id> lcouderc/microbannot:latest
 	docker login
-	docker push lcouderc/bilille_ifb
+	docker push lcouderc/microbannot
 	```

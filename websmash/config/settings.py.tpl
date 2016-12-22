@@ -1,5 +1,5 @@
 ############# Configuration #############
-DEBUG = {{ bilille.debug }}
+DEBUG = {{ microbannot.debug }}
 SECRET_KEY = 'replace this by a long random awesome string'
 RESULTS_PATH = "/websmash/upload"
 RESULTS_URL = "/upload"

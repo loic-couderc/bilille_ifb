@@ -26,31 +26,31 @@ apt-get autoremove  -y --purge oxygen-icon-theme mysql-server-core-5.5
 apt-get clean && apt-get autoremove --purge -y && reboot
 
 # clone git repo
-cd /ifb && git clone https://github.com/loic-couderc/bilille_ifb.git && cd bilille_ifb
+cd /ifb && git clone https://github.com/loic-couderc/microbannot.git && cd microbannot
 
 # update config.in
-sed -i 's|/tmp/crispr|/root/mydisk/bilille_ifb/crispr|' config.ini
-sed -i 's|/tmp/websmash|/root/mydisk/bilille_ifb/websmash|' config.ini
+sed -i 's|/tmp/crispr|/root/mydisk/microbannot/crispr|' config.ini
+sed -i 's|/tmp/websmash|/root/mydisk/microbannot/websmash|' config.ini
 
-# be sur to have installed all databases under /ifb/bilille_ifb/databases as mentionned here:  http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
-mkdir -p /root/mydisk/bilille_ifb/databases/pfam && cd /root/mydisk/bilille_ifb/databases/pfam
+# be sur to have installed all databases under /ifb/microbannot/databases as mentionned here:  http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
+mkdir -p /root/mydisk/microbannot/databases/pfam && cd /root/mydisk/microbannot/databases/pfam
 curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
 gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
-mkdir -p /root/mydisk/bilille_ifb/databases/clusterblast && cd /root/mydisk/bilille_ifb/databases/clusterblast
+mkdir -p /root/mydisk/microbannot/databases/clusterblast && cd /root/mydisk/microbannot/databases/clusterblast
 wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
 tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
 
-mkdir -p /ifb/bilille_ifb/databases/{pfam,clusterblast}
-/bin/mount -o bind /root/mydisk/bilille_ifb/databases/pfam /ifb/bilille_ifb/databases/pfam
-/bin/mount -o bind /root/mydisk/bilille_ifb/databases/clusterblast /ifb/bilille_ifb/databases/clusterblast
+mkdir -p /ifb/microbannot/databases/{pfam,clusterblast}
+/bin/mount -o bind /root/mydisk/microbannot/databases/pfam /ifb/microbannot/databases/pfam
+/bin/mount -o bind /root/mydisk/microbannot/databases/clusterblast /ifb/microbannot/databases/clusterblast
 
 # build image (until we provide a repo)
 docker volume ls -qf dangling=true | xargs -r docker volume rm
-cd /ifb/bilille_ifb/
-#docker build -t bilille .
+cd /ifb/microbannot/
+#docker build -t microbannot .
 # setup daemon
-cp ifb/daemon/docker-bilille.conf /etc/init/docker-bilille.conf
+cp ifb/daemon/docker-microbannot.conf /etc/init/docker-microbannot.conf
 initctl reload-configuration
 
-# manually start the app (/var/log/upstart/docker-bilille.log if a pb occured)
-initctl start docker-bilille
+# manually start the app (/var/log/upstart/docker-microbannot.log if a pb occured)
+initctl start docker-microbannot

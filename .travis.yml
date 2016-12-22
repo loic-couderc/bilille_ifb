@@ -14,21 +14,21 @@ before_install:
   - cd ${TRAVIS_BUILD_DIR}
 
 install:
-  - docker build -t bilille .
-  - docker run -d --name bilille
+  - docker build -t microbannot .
+  - docker run -d --name microbannot
     --publish 80:80
     --volume $TRAVIS_BUILD_DIR:/config:ro
     --volume /tmp/databases:/databases:ro
     --volume /tmp/crispr:/crispr_detect/upload:rw
     --volume /tmp/websmash:/websmash/upload:rw
-    bilille
+    microbannot
   - sleep 10 #sleep to give the time to apps to be up
 
 script:
-  - docker exec -i -t bilille /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
-  - docker exec -i -t bilille /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
-  - docker exec -i -t bilille /bin/bash -c "run_crispr_detect -h"
-  - docker exec -i -t bilille /bin/bash -c "run_antismash -h"
+  - docker exec -i -t microbannot /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
+  - docker exec -i -t microbannot /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
+  - docker exec -i -t microbannot /bin/bash -c "run_crispr_detect -h"
+  - docker exec -i -t microbannot /bin/bash -c "run_antismash -h"
 
 after_script:
-  - docker rm -f bilille
+  - docker rm -f microbannot
