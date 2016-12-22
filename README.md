@@ -18,14 +18,14 @@
 	--publish 80:80 \
 	--volume /home/lcouderc/workspace/microbannot:/config:ro \
 	--volume /data/databases:/databases:ro \
-	--volume /tmp/crispr:/crispr_detect/upload:rw \
+	--volume /tmp/webannot:/webannot/upload:rw \
 	--volume /tmp/websmash:/websmash/upload:rw \
 	microbannot
 	```
 
 3. test
 	```bash
-	docker exec -i -t microbannot /bin/bash -c "cd /crispr_detect && flask/bin/python -m unittest discover tests"
+	docker exec -i -t microbannot /bin/bash -c "cd /webannot && flask/bin/python -m unittest discover tests"
 	docker exec -i -t microbannot /bin/bash -c "cd /websmash && pip install -r test_requirements.txt && python -m unittest discover tests"
 	docker exec -i -t microbannot /bin/bash -c "run_crispr_detect -h"
 	docker exec -i -t microbannot /bin/bash -c "run_antismash -h"

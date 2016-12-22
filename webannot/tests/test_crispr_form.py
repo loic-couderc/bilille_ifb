@@ -6,7 +6,7 @@ import re
 import json
 import warnings
 from flask import url_for
-import crispr_detect
+import webannot
 
 
 
@@ -15,13 +15,13 @@ class CrisprFormTestCase(unittest.TestCase):
     def setUp(self):
         warnings.simplefilter('ignore', DeprecationWarning)
 
-        crispr_detect.app.config['TESTING'] = True
-        crispr_detect.app.config['WTF_CSRF_ENABLED'] = False
+        webannot.app.config['TESTING'] = True
+        webannot.app.config['WTF_CSRF_ENABLED'] = False
         self.tempdir = tempfile.TemporaryDirectory()
-        crispr_detect.app.config['UPLOAD_FOLDER'] = self.tempdir.name
-        crispr_detect.app.config['SERVER_NAME'] = 'localhost'
-        self.app = crispr_detect.app.test_client()
-        self.ctx = crispr_detect.app.app_context()
+        webannot.app.config['UPLOAD_FOLDER'] = self.tempdir.name
+        webannot.app.config['SERVER_NAME'] = 'localhost'
+        self.app = webannot.app.test_client()
+        self.ctx = webannot.app.app_context()
         self.ctx.push()
 
         self.data_form = dict(
@@ -85,7 +85,7 @@ class CrisprFormTestCase(unittest.TestCase):
             processing = json.loads(response.get_data(as_text=True))
             if not processing:
                 break
-        with open(os.path.join(crispr_detect.app.config['UPLOAD_FOLDER'], uuid, 'stdout'), 'r') as stdout_file:
+        with open(os.path.join(webannot.app.config['UPLOAD_FOLDER'], uuid, 'stdout'), 'r') as stdout_file:
             params = self.parse_cmd_parameters(str(stdout_file.read()))
             return params
 

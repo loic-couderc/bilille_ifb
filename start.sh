@@ -5,7 +5,7 @@ set -e #Exit immediately if a pipeline returns a non-zero status
 echo "configure"
 confs=(
 	"/websmash/config/settings.py.tpl"
-	"/crispr_detect/config/settings.py.tpl"
+	"/webannot/config/settings.py.tpl"
 )
 
 for cfg in ${confs[@]}; do
@@ -35,7 +35,7 @@ cd /websmash && /usr/local/bin/gunicorn --env WEBSMASH_CONFIG=/websmash/config/s
 
 #6_ run crispr
 echo "run the crispr web interface"
-cd /crispr_detect && /crispr_detect/flask/bin/gunicorn --env CRISPR_DETECT_CONFIG=/crispr_detect/config/settings.py -b 0.0.0.0:8001 crispr_detect:app&
+cd /webannot && /webannot/flask/bin/gunicorn --env WEBANNOT_CONFIG=/webannot/config/settings.py -b 0.0.0.0:8001 webannot:app&
 
 #supervisord -n
 while true; do sleep 1000; done #to keep docker container alive

@@ -2,7 +2,7 @@
 set -o errexit
 set -o nounset
 
-CMD="/crispr_detect/crispr_detect/CRISPRFinder_beta2_11.py"
+CMD="/webannot/webannot/CRISPRFinder_beta2_11.py"
 case $1 in
     -h|--help)
     $CMD -h
@@ -13,7 +13,7 @@ case $1 in
     readonly OUTDIR=$2
     shift
     shift
-    cd /crispr_detect/upload/ && $CMD $@ --fasta /crispr_detect/upload/${INFILE} --output_dir /crispr_detect/upload/${OUTDIR}
+    cd /webannot/upload/ && $CMD $@ --fasta /webannot/upload/${INFILE} --output_dir /webannot/upload/${OUTDIR}
     ;;
 esac
 

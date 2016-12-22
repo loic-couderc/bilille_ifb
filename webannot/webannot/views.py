@@ -9,7 +9,7 @@ from flask_restful import reqparse, inputs
 import werkzeug
 from werkzeug.utils import secure_filename
 
-from crispr_detect import app
+from webannot import app
 from .forms import CrisprFinderForm
 from .CRISPRFinder_beta2_11 import FindCRISPRs
 
