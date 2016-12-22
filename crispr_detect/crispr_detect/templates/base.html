@@ -3,26 +3,30 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, shrink-to-fit=no, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
 
-    <title>Tools</title>
+<title>Tools</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel='stylesheet'>
+<!-- Bootstrap Core CSS -->
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+	rel='stylesheet'>
 
-    <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='css/simple-sidebar.css') }}" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="{{ url_for('static', filename='css/simple-sidebar.css') }}"
+	rel="stylesheet">
 
-    <!-- Bilille CSS -->
-    <link href="{{ url_for('static', filename='css/bilille.css') }}" rel="stylesheet">
+<!-- Bilille CSS -->
+<link href="{{ url_for('static', filename='css/bilille.css') }}"
+	rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
@@ -31,63 +35,54 @@
 
 <body>
 
-<div id="wrapper">
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="{{ url_for('index') }}">Home</a>
-            </li>
-            <li>
-                <a href="{{ url_for('crispr_finder') }}">CRISPRDetect</a>
-            </li>
-            <li>
-                <a href="{{ url_for('antismash', _external=True) }}" target="_blank">antiSMASH</a>
-            </li>
-            <!--
+	<div id="wrapper">
+		<!-- Sidebar -->
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li class="sidebar-brand"><a href="{{ url_for('index') }}">Home</a>
+				</li>
+				<li><a href="{{ url_for('crispr_finder') }}">CRISPRDetect</a></li>
+				<li><a href="{{ url_for('antismash', _external=True) }}"
+					target="_blank">antiSMASH</a></li>
+				<!--
             <li>
                 <a href="#">IS Finder</a>
             </li>
             -->
-            <li>
-                <a href="{{ url_for('contact') }}">Contact</a>
-            </li>
-        </ul>
-    </div>
-    <!-- /#sidebar-wrapper -->
+				<li><a href="{{ url_for('run_them_all') }}">Quick run</a></li>
+				<li><a href="{{ url_for('contact') }}">Contact</a></li>
+			</ul>
+		</div>
+		<!-- /#sidebar-wrapper -->
 
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    {% block content %}
-                    {% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /#page-content-wrapper -->
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12">{% block content %} {% endblock %}</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
 
-</div>
-<!-- /#wrapper -->
+	</div>
+	<!-- /#wrapper -->
 
-{% block js %}
-<!-- jQuery -->
-<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+	{% block js %}
+	<!-- jQuery -->
+	<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
-<!-- Menu Toggle Script -->
-<script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
-</script>
-{% endblock %}
+	<!-- Menu Toggle Script -->
+	<script>
+		$("#menu-toggle").click(function(e) {
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+	</script>
+	{% endblock %}
 </body>
 
 </html>

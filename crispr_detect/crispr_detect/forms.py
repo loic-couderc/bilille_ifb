@@ -39,3 +39,10 @@ class CrisprFinderForm(Form):
                                     description='is maximum allowed distance between two regions with repeats')
     search_tracrrna = SelectField(choices=[('False', 'no'), ('True', 'yes')], default='False', description='',
                                   label='Search tracrRNA')
+
+
+class QuickRunForm(Form):
+    sequence = FileField(validators=[
+        FileRequired(), FileAllowed(
+            ['fasta', 'fa'], 'Fasta only (.fa/.fasta)!')
+    ])

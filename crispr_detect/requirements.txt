@@ -10,3 +10,4 @@ guess_language
 #marshmallow
 flask-restful
 webargs
+requests

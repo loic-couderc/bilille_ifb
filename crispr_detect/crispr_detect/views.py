@@ -2,15 +2,17 @@ import os
 import sys
 import uuid
 import threading
+import requests, json
 
-from flask import render_template, abort, redirect, request, url_for, jsonify
+from flask import render_template, abort, redirect, request, url_for, jsonify, flash
+from flask import Markup
 from flask_restful import reqparse, inputs
 
 import werkzeug
 from werkzeug.utils import secure_filename
 
 from crispr_detect import app
-from .forms import CrisprFinderForm
+from .forms import CrisprFinderForm, QuickRunForm
 from .CRISPRFinder_beta2_11 import FindCRISPRs
 
 
@@ -33,8 +35,29 @@ def parse_crispr_finder_form():
     form_parser.add_argument('search_tracrrna', type=inputs.boolean)
     return form_parser.parse_args()
 
-# @copy_current_request_context
+def parse_quick_run_form():
+    form_parser = reqparse.RequestParser()
+    form_parser.add_argument(
+        'sequence', type=werkzeug.datastructures.FileStorage, location='files')
+    return form_parser.parse_args()
 
+def run_crispr_finder(args):
+    job_id = str(uuid.uuid4())
+    results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
+    os.mkdir(results_dir)
+
+    sequence_file = args['sequence']
+    sequence_filename = secure_filename(sequence_file.filename)
+    sequence_filepath = os.path.join(results_dir, sequence_filename)
+    sequence_file.save(sequence_filepath)
+
+    args['inputpath'] = sequence_filepath
+    args['outputpath'] = results_dir
+    args['job_id'] = job_id
+    run_crispr = threading.Thread(
+        target=crispr_finder_runner, kwargs=args)
+    run_crispr.start()
+    return job_id
 
 def crispr_finder_runner(**args):
     try:
@@ -96,23 +119,8 @@ def crispr_finder():
         # #http://stackoverflow.com/questions/30175285/flask-wtf-upload-file-error
         form = CrisprFinderForm()
         if form.validate():
-            job_id = str(uuid.uuid4())
-
-            results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
-            os.mkdir(results_dir)
             args = parse_crispr_finder_form()
-            sequence_file = args['sequence']
-            sequence_filename = secure_filename(sequence_file.filename)
-            sequence_filepath = os.path.join(results_dir, sequence_filename)
-            sequence_file.save(sequence_filepath)
-
-            args['inputpath'] = sequence_filepath
-            args['outputpath'] = results_dir
-            args['job_id'] = job_id
-            run_crispr = threading.Thread(
-                target=crispr_finder_runner, kwargs=args)
-            run_crispr.start()
-            #print(url_for("crispr_finder_result", uuid=job_id))
+            job_id = run_crispr_finder(args)
             return redirect(url_for("crispr_finder_result", uuid=job_id))
         else:
             return render_template('crispr_finder.html', form=form, page_title='CRISPR Finder'), 400
@@ -149,6 +157,46 @@ def processing():
 def antismash():
     return redirect("/antismash")
 
-@app.route('/contact')
+@app.route('/contact/')
 def contact():
     return render_template('contact.html')
+
+
+def add_flash_message(app_name, status_code, reason=None, url=None):
+    if status_code != requests.codes.ok:
+        flash(Markup("<h4> ERROR %s </h4> %s return the following error: %s" % (status_code, app_name, reason)), 'bs-callout bs-callout-danger')
+    else:
+        flash(Markup("<h4> SUCCESS </h4> Your %s request was successfully sended. Follow this link to access your results: <a href='%s' target='_blank'>here</a>" % (app_name, url)), 'bs-callout bs-callout-info')
+
+def post(url, files):
+    r = requests.post(url, files=files, allow_redirects=True)
+    return r
+
+@app.route('/quick_run/', methods=['GET', 'POST'])
+def run_them_all():
+    if request.method == 'POST':
+        form = QuickRunForm()
+        if form.validate():
+            args = parse_quick_run_form()
+            url = url_for('antismash', _external=True)
+            if 'WEBSMASH_URL' in app.config:
+                url = app.config['WEBSMASH_URL']
+            file = args['sequence']
+            files = {'seq': (file.filename, file.stream, file.mimetype)}
+            #_post('antiSMASH', url, files)
+            try:
+                r = post(url,files)
+                add_flash_message('antiSMASH', r.status_code, r.reason, url=r.url)
+            except requests.exceptions.ConnectionError as e:
+                add_flash_message('antiSMASH', 503, "Service Unavailable")
+
+            file.seek(0)
+            crispr_form = CrisprFinderForm(csrf_enabled=False)
+            crispr_form_data = crispr_form.data
+            crispr_form_data['pattern'] = crispr_form.pattern.default #otherwise its empty
+            job_id = run_crispr_finder(crispr_form_data)
+            add_flash_message('CRISPRDetect', 200, url=url_for("crispr_finder_result", _external=True, uuid=job_id))
+            file.close()
+        else:
+            return render_template('quick_run.html', form=form), 400
+    return render_template('quick_run.html', form=QuickRunForm())
