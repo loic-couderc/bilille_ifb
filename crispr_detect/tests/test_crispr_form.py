@@ -61,7 +61,7 @@ class CrisprFormTestCase(unittest.TestCase):
         assert b'Fasta only' in response.data
 
     def parse_uuid(self, response):
-        # Crispr Finder  : 84771680-68bd-4807-9ded-cf7fd7324364
+        # CRISPRDetect  : 84771680-68bd-4807-9ded-cf7fd7324364
         match = re.search(
             r'CRISPRDetect\s+:\s+([\-\w)]+)', str(response.data))
         return match.group(1)
