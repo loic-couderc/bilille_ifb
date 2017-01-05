@@ -42,7 +42,6 @@ def crispr_finder_runner(**args):
         processing_file = create_flag_file(args['outputpath'], 'processing')
         stdout_file = os.path.join(os.path.join(args['outputpath'], 'stdout'))
         stderr_file = os.path.join(os.path.join(args['outputpath'], 'stderr'))
-        #global old_stdout, old_stderr
         with open(stdout_file, 'w') as current_stdout, open(stderr_file, 'w') as current_stderr:
             old_stdout, old_stderr = sys.stdout, sys.stderr
             sys.stdout, sys.stderr = current_stdout, current_stderr
@@ -82,10 +81,8 @@ def create_flag_file(basedir, name):
 @app.route('/')
 @app.route('/index/')
 def index():
-    user = "tpt"  # TODO : clean this
     return render_template('index.html',
-                           title='Home',
-                           user=user)
+                           title='Home')
 
 
 @app.route('/crispr_detect/', methods=['GET', 'POST'])
@@ -99,7 +96,7 @@ def crispr_finder():
             job_id = str(uuid.uuid4())
 
             results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
-            os.mkdir(results_dir)
+            os.makedirs(results_dir, exist_ok=True)
             args = parse_crispr_finder_form()
             sequence_file = args['sequence']
             sequence_filename = secure_filename(sequence_file.filename)
@@ -112,7 +109,6 @@ def crispr_finder():
             run_crispr = threading.Thread(
                 target=crispr_finder_runner, kwargs=args)
             run_crispr.start()
-            #print(url_for("crispr_finder_result", uuid=job_id))
             return redirect(url_for("crispr_finder_result", uuid=job_id))
         else:
             return render_template('crispr_finder.html', form=form, page_title='CRISPR Finder'), 400
