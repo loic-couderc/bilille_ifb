@@ -33,16 +33,12 @@ sed -i 's|/tmp/crispr|/root/mydisk/microbannot/crispr|' config.ini
 sed -i 's|/tmp/websmash|/root/mydisk/microbannot/websmash|' config.ini
 
 # be sur to have installed all databases under /ifb/microbannot/databases as mentionned here:  http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
-mkdir -p /root/mydisk/microbannot/databases/pfam && cd /root/mydisk/microbannot/databases/pfam
+mkdir -p /ifb/microbannot/databases/pfam && cd /ifb/microbannot/databases/pfam
 curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
 gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
-mkdir -p /root/mydisk/microbannot/databases/clusterblast && cd /root/mydisk/microbannot/databases/clusterblast
+mkdir -p /ifb/microbannot/databases/clusterblast && cd /ifb/microbannot/databases/clusterblast
 wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
 tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
-
-mkdir -p /ifb/microbannot/databases/{pfam,clusterblast}
-/bin/mount -o bind /root/mydisk/microbannot/databases/pfam /ifb/microbannot/databases/pfam
-/bin/mount -o bind /root/mydisk/microbannot/databases/clusterblast /ifb/microbannot/databases/clusterblast
 
 # build image (until we provide a repo)
 docker volume ls -qf dangling=true | xargs -r docker volume rm
