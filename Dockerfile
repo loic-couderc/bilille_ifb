@@ -4,7 +4,7 @@ MAINTAINER Loïc Couderc <loic.couderc@univ-lille1.fr>
 
 LABEL ANNOT.Name="MicrobAnnot" \
   ANNOT.Version="0.1" \
-  ANNOT.Description="MicrobAnnot is a toolkit for microbial genome annotation (secondary metabolite analysis with antiSMASH and CRISPR discovering)" \
+  ANNOT.Description="MicrobAnnot is a toolkit for microbial genome annotation (secondary metabolite analysis with antiSMASH and CRISPR discovering with CRISPRDetect)" \
   ANNOT.Vendor="bilille (Univ. Lille,  CNRS, Inserm, Inria, Institut Pasteur de Lille, CHRU Lille et IRCL)" \
   ANNOT.EDAM_Operation="['operation_2403', 'operation_0361']" \
   ANNOT.Requires="['antiSMASH/3.0.5', 'CRISPRDetect/beta_2_11']" \
