@@ -90,7 +90,7 @@ RUN curl -L https://bitbucket.org/antismash/docker/raw/c63856cb69d7e51893e510118
 
 # grab runSMASH
 RUN git clone https://bitbucket.org/antismash/runsmash.git
-RUN cd runsmash && git reset --hard 47412c2 && cd -
+RUN cd runsmash && git reset --hard 9dd0c0f && cd -
 
 # compress the shipped profiles
 WORKDIR /antismash-${ANTISMASH_VERSION}/antismash/specific_modules/nrpspks
