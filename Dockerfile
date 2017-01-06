@@ -90,6 +90,7 @@ RUN curl -L https://bitbucket.org/antismash/docker/raw/c63856cb69d7e51893e510118
 
 # grab runSMASH
 RUN git clone https://bitbucket.org/antismash/runsmash.git
+RUN cd runsmash && git reset --hard 47412c2 && cd -
 
 # compress the shipped profiles
 WORKDIR /antismash-${ANTISMASH_VERSION}/antismash/specific_modules/nrpspks
@@ -124,6 +125,7 @@ RUN apt-get update && apt-get install -y \
     python-pip
 
 RUN git clone https://bitbucket.org/antismash/websmash.git
+RUN cd websmash && git reset --hard c1a39d9 && cd -
 ADD ./websmash/config/settings.py.tpl /websmash/config/settings.py.tpl
 WORKDIR /websmash
 
