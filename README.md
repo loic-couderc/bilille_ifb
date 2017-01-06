@@ -37,7 +37,7 @@
 
 5. Optional (push image)
 	```bash
-	docker tag <id> lcouderc/microbannot:latest
-	docker login
-	docker push lcouderc/microbannot
+	docker tag <id> docker-registry.genouest.org/bilille/microbannot
+	docker login docker-registry.genouest.org
+	docker push docker-registry.genouest.org/bilille/microbannot
 	```
