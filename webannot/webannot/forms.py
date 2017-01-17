@@ -10,7 +10,7 @@ class CrisprFinderForm(Form):
     #    DataRequired('Please provide a valid DNA sequence')])
     sequence = FileField(validators=[
         FileRequired(), FileAllowed(
-            ['fasta', 'fa'], 'Fasta only (.fa/.fasta)!')
+            ['fasta', 'fsa', 'fa'], 'Fasta only (.fa/.fsa/.fasta)!')
     ])
     k_mer_size_filter = IntegerField(default=3,
                                      description='is used to compare segments of DRs and spacers')
