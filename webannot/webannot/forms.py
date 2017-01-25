@@ -43,9 +43,8 @@ class CrisprFinderForm(Form):
 
     def validate(self):
         rv = Form.validate(self)
-        if not rv:
-            return False
-        elif not self.sequence.data.filename and not self.sequence2.data:
+
+        if not self.sequence.data.filename and not self.sequence2.data:
             message = "A sequence have to be provided. Please, upload a file or past a sequence."
             self.sequence.errors.append(message)
             self.sequence2.errors.append(message)
@@ -69,7 +68,7 @@ class CrisprFinderForm(Form):
             if message is not None:
                 self.sequence2.errors.append(message)
                 return False
-        return True
+        return rv
 
     def _valid_fasta(self, stream):
         try:
