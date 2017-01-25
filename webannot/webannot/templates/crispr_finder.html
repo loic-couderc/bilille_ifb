@@ -15,19 +15,23 @@ input_field %} {% block content %}
 		<div class="row">
 			<div class="col-md-offset-2 col-md-5">or past your sequence:</div>
 		</div>
+
 		{{ input_field(form, "sequence2", label=False) }}
 
-		<div class="panel {% if form.errors %}panel-danger{% endif %}">
+		{% set advanced_param_error = form.errors|reject('equalto', "sequence")|reject('equalto', "sequence2")|list%}
+		<div class="panel">
 			<div class="panel-heading">
 				<h4 class="panel-title">
-					<a data-toggle="collapse" aria-expanded=false href="#advanced">
+					<a data-toggle="collapse"
+					aria-expanded="{% if advanced_param_error %}true{% else %}false{% endif %}" href="#advanced">
 						<i class="glyphicon glyphicon glyphicon-plus pull-left"></i> <i
 						class="glyphicon glyphicon glyphicon-minus pull-left"></i> See
 						more parameters
 					</a>
 				</h4>
 			</div>
-			<div id="advanced" class="panel-body panel-collapse collapse">
+			<div id="advanced" class="panel-body panel-collapse collapse {% if advanced_param_error %}in{% endif %}"
+			aria-expanded="{% if  advanced_param_error %}true{% else %}false{% endif %}">
 				{{ input_field(form, "k_mer_size_filter") }} {{ input_field(form,
 				"pattern") }} {{ input_field(form, "window_size") }} {{
 				input_field(form, "allowed_mismatch") }} {{ input_field(form,
