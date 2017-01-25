@@ -6,6 +6,7 @@ import re
 import json
 import warnings
 from flask import url_for
+import werkzeug
 import webannot
 
 
@@ -17,15 +18,15 @@ class CrisprFormTestCase(unittest.TestCase):
 
         webannot.app.config['TESTING'] = True
         webannot.app.config['WTF_CSRF_ENABLED'] = False
-        self.tempdir = tempfile.TemporaryDirectory()
-        webannot.app.config['UPLOAD_FOLDER'] = self.tempdir.name
+        self.tempdir = tempfile.mkdtemp()
+        webannot.app.config['UPLOAD_FOLDER'] = self.tempdir
         webannot.app.config['SERVER_NAME'] = 'localhost'
         self.app = webannot.app.test_client()
         self.ctx = webannot.app.app_context()
         self.ctx.push()
 
         self.data_form = dict(
-            sequence=(BytesIO(b'my file contents'), "filename.fasta"),
+            sequence=self.fake_file('>header\nfakesequence', "filename.fasta"),
             k_mer_size_filter=3,
             pattern="####_####",
             window_size=200,
@@ -40,25 +41,66 @@ class CrisprFormTestCase(unittest.TestCase):
         )
 
     def tearDown(self):
-        self.tempdir.cleanup()
+        os.system("rm -rf %s" % self.tempdir)
+
+    def fake_file(self, record_str, filename):
+        b = BytesIO(record_str.encode())
+        return werkzeug.datastructures.FileStorage(stream= b, filename=filename)
 
     def test_crispr_form_no_sequence(self):
-        del self.data_form['sequence']
+        self.data_form['sequence'] = self.fake_file('', '')
         response = self.app.post(url_for(
             'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
         #response = self.app.post('/crispr_finder/', content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
         assert response.status_code == 400
-        assert b'This field is required' in response.data
+        assert b'A sequence have to be provided' in response.data
 
     def test_crispr_form_sequence_file_extension(self):
-        self.data_form['sequence'] = (
-            BytesIO(b'my file contents'), "filename.wrong")
+        self.data_form['sequence'] = self.fake_file('>header\nfakesequence', "filename.wrong")
 
         response = self.app.post(url_for(
             'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
         #response = self.app.post('/crispr_finder/', content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
         assert response.status_code == 400
         assert b'Fasta only' in response.data
+
+    def test_sequence_and_sequence2_provided(self):
+        self.data_form['sequence2'] = ">header\nfakesequence"
+        response = self.app.post(url_for(
+            'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
+        assert response.status_code == 400
+        assert b'Please, choose a file OR past your sequence' in response.data
+
+    def test_sequence2_invalid_record(self):
+        self.data_form['sequence'] = self.fake_file('', '')
+        self.data_form['sequence2'] = "no header"
+        response = self.app.post(url_for(
+            'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
+        assert response.status_code == 400
+        assert b'No valid sequence(s) provided' in response.data
+
+    def test_sequence2_empty_seq(self):
+        self.data_form['sequence'] = self.fake_file('', '')
+        self.data_form['sequence2'] = ">myheader\n"
+        response = self.app.post(url_for(
+            'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
+        assert response.status_code == 400
+        assert b'Empty sequence found' in response.data
+
+    def test_sequence2_multifasta(self):
+        self.data_form['sequence'] = self.fake_file('', '')
+        self.data_form['sequence2'] = ">myheader\nactgactg\n>myheader2\naccccccccc"
+        response = self.app.post(url_for(
+            'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
+        assert response.status_code == 400
+        assert b'Only one sequence' in response.data
+
+    def test_sequence2_valid_seq(self):
+        self.data_form['sequence'] = self.fake_file('', '')
+        self.data_form['sequence2'] = ">myheader\nit-is-a-valid-seq-we-do-not-check-the-alphabet"
+        response = self.app.post(url_for(
+            'crispr_finder'), content_type='multipart/form-data', data=self.data_form, follow_redirects=True)
+        assert response.status_code == 200
 
     def parse_uuid(self, response):
         # CRISPRDetect  : 84771680-68bd-4807-9ded-cf7fd7324364

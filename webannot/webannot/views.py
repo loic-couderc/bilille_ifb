@@ -1,4 +1,5 @@
 import os
+import io
 import sys
 import uuid
 import threading
@@ -20,6 +21,7 @@ def parse_crispr_finder_form():
     # , required=True)
     form_parser.add_argument(
         'sequence', type=werkzeug.datastructures.FileStorage, location='files')
+    form_parser.add_argument('sequence2', type=str)
     form_parser.add_argument('k_mer_size_filter', type=int)
     form_parser.add_argument('pattern', type=str)
     form_parser.add_argument('window_size', type=int)
@@ -98,7 +100,15 @@ def crispr_finder():
             results_dir = os.path.join(app.config['UPLOAD_FOLDER'], job_id)
             os.makedirs(results_dir, exist_ok=True)
             args = parse_crispr_finder_form()
-            sequence_file = args['sequence']
+            if args['sequence2']:
+                args['sequence2'] = args['sequence2'].rstrip()
+                s = io.BytesIO(args['sequence2'].encode('utf-8'))
+                filename = 'input.fasta'
+                content_type = 'application/octet-stream'
+                mimetype = 'application/octet-stream'
+                sequence_file = werkzeug.datastructures.FileStorage(stream=s, filename=filename, content_type=content_type)
+            else:
+                sequence_file = args['sequence']
             sequence_filename = secure_filename(sequence_file.filename)
             sequence_filepath = os.path.join(results_dir, sequence_filename)
             sequence_file.save(sequence_filepath)

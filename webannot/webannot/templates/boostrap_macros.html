@@ -1,7 +1,9 @@
-{% macro input_field(form, field_name, placeholder, class="form-control") %}
+{% macro input_field(form, field_name, placeholder, class="form-control", label=True) %}
 <div class="form-group {% if form[field_name].errors %} has-error {% endif %}">
+    {% if label %}
     {{ form[field_name].label(class="col-md-2 control-label") }}
-    <div class="col-md-5">
+    {% endif %}
+    <div class=" {% if not label %} col-md-offset-2 {% endif %} col-md-5">
         {% if placeholder %}
         {{ form[field_name](placeholder=placeholder, class=class) }}
         {% else %}
