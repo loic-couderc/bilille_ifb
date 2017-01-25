@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-MAINTAINER Loïc Couderc <loic.couderc@univ-lille1.fr>
+MAINTAINER Loic Couderc <loic.couderc@univ-lille1.fr>
 
 LABEL ANNOT.Name="MicrobAnnot" \
   ANNOT.Version="0.1" \
