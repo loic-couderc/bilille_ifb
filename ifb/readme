@@ -1,8 +1,7 @@
 ############################################################
-# install on Ubuntu 14.04 IFB-X2GO-10G (16.12) DEV4
+# install on Ubuntu 14.04 IFB-X2GO-10G (16.12)
 
 # update os
-#echo libc6 hold | sudo dpkg --set-selections #ignore libc6 which makes a mess
 #apt-get update && apt-get -y upgrade
 
 # setup docker
@@ -23,29 +22,39 @@ apt-get remove -y --purge libreoffice-core libreoffice-common
 apt-get remove -y --purge firefox
 apt-get autoremove  -y --purge linux-image-extra-3.13.0-34-generic linux-image-extra-3.13.0-79-generic linux-image-3.13.0-34-generic linux-image-extra-3.13.0-79-generic
 apt-get autoremove  -y --purge oxygen-icon-theme mysql-server-core-5.5
+apt-get install -f
 apt-get clean && apt-get autoremove --purge -y && reboot
 
 # clone git repo
 cd /ifb && git clone https://github.com/loic-couderc/microbannot.git && cd microbannot
 
-# update config.in
+# update config.ini
 sed -i 's|/tmp/crispr|/root/mydisk/microbannot/crispr|' config.ini
 sed -i 's|/tmp/websmash|/root/mydisk/microbannot/websmash|' config.ini
 
-# be sur to have installed all databases under /ifb/microbannot/databases as mentionned here:  http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
-mkdir -p /ifb/microbannot/databases/pfam && cd /ifb/microbannot/databases/pfam
+# be sur to have installed all databases as mentionned here:  http://docs.antismash.secondarymetabolites.org/install/#antismash-standalone-lite
+# on a virtual disk:
+mkdir -p databases/pfam && cd databases/pfam
 curl ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam27.0/Pfam-A.hmm.gz > Pfam-A.hmm.gz
 gunzip Pfam-A.hmm.gz && apt-get install hmmer && hmmpress Pfam-A.hmm
-mkdir -p /ifb/microbannot/databases/clusterblast && cd /ifb/microbannot/databases/clusterblast
+mkdir -p databases/clusterblast && cd databases/clusterblast
 wget https://bitbucket.org/antismash/antismash/downloads/clusterblast_dmnd07.tar.xz
 tar -xJf clusterblast_dmnd07.tar.xz && rm clusterblast_dmnd07.tar.xz
 
-# build image (until we provide a repo)
+# create an NFS server vm and attached the virtual disk
+
+# on the ubuntu vm
+ufw disable
+echo "192.54.201.96:/root/mydisk /ifb/data/microbannot/ nfs defaults 0 0" > /etc/fstab
+mkdir /ifb/data/microbannot/
+mount -a
+mount
+ls -l /ifb/data/microbannot/
+
+# run docker image
 docker volume ls -qf dangling=true | xargs -r docker volume rm
-cd /ifb/microbannot/
-#docker build -t microbannot .
-# setup daemon
-cp ifb/daemon/docker-microbannot.conf /etc/init/docker-microbannot.conf
+
+cp /ifb/microbannot/ifb/daemon/docker-microbannot.conf /etc/init/docker-microbannot.conf
 initctl reload-configuration
 
 # manually start the app (/var/log/upstart/docker-microbannot.log if a pb occured)
