@@ -18,7 +18,7 @@ redis-server&
 
 #2_ run runsmash
 echo "run the antiSMASH job runner(s)"
-/runsmash/runSMASH --queue "redis://localhost:6379/0" --workdir /websmash/upload --statusdir /websmash/upload/status --name runner01 --long-running&
+/runsmash/runSMASH --queue "redis://localhost:6379/0" --workdir /websmash/upload --statusdir /websmash/upload/status --name runner01 --long-running --cpus $(grep -c ^processor /proc/cpuinfo)&
 
 #3_ run the antiSMASH job status monitor
 echo "the antiSMASH job runner(s)"
