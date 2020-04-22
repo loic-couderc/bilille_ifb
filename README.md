@@ -41,3 +41,6 @@
 	docker login docker-registry.genouest.org
 	docker push docker-registry.genouest.org/bilille/microbannot
 	```
+The following images are identical:
+* docker pull lcouderc/microbannot
+* docker pull docker-registry.genouest.org/bilille/microbannot 
